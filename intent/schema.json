@@ -1,0 +1,59 @@
+{
+    "intent": {
+        "object": {
+            "type": "string",
+            "description": "Specific object requested by the user."
+        },   
+        "difficulty": {
+            "type": "integer",
+            "range": [1, 5],
+             "description": "Requested folding difficulty level."
+        }
+    },
+    "structure": {
+        "parts": {
+            "type": "array",
+            "description": "List of structural parts that make up the requested object. Each item represents a unique part instance.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for this specific part instance. Distinguishes it from other parts with the same name (e.g. 'leg_01' vs 'leg_02')."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Semantic label for the part (e.g. 'head', 'leg', 'tail', 'wing')."
+                    },
+                    "length_weight": {
+                        "type": "number",
+                        "description": "Relative importance of the part, used as an initial estimate for stick length during tree generation."
+                    },
+                    "symmetry": {
+                        "type": "object",
+                        "description": "Optional metadata describing whether this part belongs to a mirrored or repeated group.",
+                        "properties": {
+                            "group": {
+                                "type": "string",
+                                "description": "Identifier shared by mirrored or repeated parts (e.g. 'leg', 'wing', 'antler')."
+                            },
+                            "side": {
+                                "type": "string",
+                                "enum": [
+                                    "left",
+                                    "right",
+                                    "center"
+                                ],
+                                "description": "Relative position of the part with respect to the object's symmetry axis."
+                            },
+                            "order_index": {
+                                "type": "integer",
+                                "description": "Index used to distinguish multiple repeated parts within the same symmetry group (e.g. front leg vs back leg)."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
