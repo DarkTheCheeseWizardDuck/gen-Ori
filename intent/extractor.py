@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 DEBUG = False
 
@@ -19,14 +19,15 @@ CURRENT_DIR = Path(__file__).resolve().parent
 # -----------------------------
 load_dotenv(ROOT_DIR / ".env")
 
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = os.getenv("GROQ_API_KEY")
+model = os.getenv("GROQ_MODEL")
 
 if not api_key:
     raise ValueError(
-        "GEMINI_API_KEY not found. Please create a .env file."
+        "GROQ_API_KEY not found. Please create a .env file."
     )
 
-client = genai.Client(api_key=api_key)
+client = Groq(api_key=api_key)
 
 # -----------------------------
 # Load schema
@@ -58,26 +59,28 @@ system_prompt = prompt_template.replace("{SCHEMA}", schema)
 user_input = input("Origami request: ")
 
 # -----------------------------
-# Call Gemini
+# Call Groq API
 # -----------------------------
 try:
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=[
-            system_prompt,
-            user_input
-        ]
+    response = client.chat.completions.create(
+        model= model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_input}
+        ],
+        temperature=0.2,
+        # response_format={"type": "json_object"}
     )
 
 except Exception as e:
-    print("\nGemini API call failed:")
+    print("\nGroq API call failed:")
     print(e)
     exit()
 
 # -----------------------------
 # Raw response
 # -----------------------------
-raw = response.text.strip()
+raw = response.choices[0].message.content.strip()
 if DEBUG:
     print("\n===== RAW RESPONSE =====")
     print(raw)
@@ -104,7 +107,7 @@ try:
     intent = json.loads(raw)
 
 except json.JSONDecodeError:
-    print("Gemini did not return valid JSON.")
+    print("Groq/Qwen did not return valid JSON.")
     print("\nReturned text:\n")
     print(raw)
     exit()
