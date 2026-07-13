@@ -35,19 +35,19 @@ Output:
       {
         "id": "body_01",
         "name": "body",
-        "weight": null,
+        "length_weight": null,
         "symmetry": null
       },
       {
         "id": "head_01",
         "name": "head",
-        "weight": null,
+        "length_weight": null,
         "symmetry": null
       },
       {
         "id": "ear_01",
         "name": "ear",
-        "weight": null,
+        "length_weight": null,
         "symmetry": {
           "group": "ear",
           "side": "left",
@@ -57,7 +57,7 @@ Output:
       {
         "id": "ear_02",
         "name": "ear",
-        "weight": null,
+        "length_weight": null,
         "symmetry": {
           "group": "ear",
           "side": "right",
@@ -67,7 +67,7 @@ Output:
       {
         "id": "front_leg_01",
         "name": "front leg",
-        "weight": null,
+        "length_weight": null,
         "symmetry": {
           "group": "front_leg",
           "side": "left",
@@ -77,7 +77,7 @@ Output:
       {
         "id": "front_leg_02",
         "name": "front leg",
-        "weight": null,
+        "length_weight": null,
         "symmetry": {
           "group": "front_leg",
           "side": "right",
@@ -87,7 +87,7 @@ Output:
       {
         "id": "hind_leg_01",
         "name": "hind leg",
-        "weight": null,
+        "length_weight": null,
         "symmetry": {
           "group": "hind_leg",
           "side": "left",
@@ -97,7 +97,7 @@ Output:
       {
         "id": "hind_leg_02",
         "name": "hind leg",
-        "weight": null,
+        "length_weight": null,
         "symmetry": {
           "group": "hind_leg",
           "side": "right",
@@ -107,7 +107,7 @@ Output:
       {
         "id": "tail_01",
         "name": "tail",
-        "weight": null,
+        "length_weight": null,
         "symmetry": null
       }
     ]
