@@ -18,6 +18,4 @@ Difficulty Levels
 
 Evaluation
 
-The "expected" field inside each test case is the ground truth ("golden output").
-
 The evaluator compares the model output against the golden output.
