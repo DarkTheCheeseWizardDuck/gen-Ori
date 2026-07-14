@@ -1,0 +1,12 @@
+[
+    {
+        "id": "E001",
+        "description": "Single explicit animal.",
+        "input": "I want an intermediate cat."
+    },
+    {
+        "id": "E002",
+        "description": "Single object with explicit pose.",
+        "input": "I want a rabbit sitting on its hind legs."
+    }
+]

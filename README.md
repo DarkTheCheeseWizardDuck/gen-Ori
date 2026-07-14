@@ -16,7 +16,8 @@ pip install -r requirements.txt
 ### 3. Configuration
 Create a `.env` file in the root directory:
 ```env
-GROQ_API_KEY=your_groq_api_key_here
+GROQ_API_KEY=gsk_your_actual_key_here
+GROQ_MODEL=llama-3.3-70b-versatile
 ```
 
 ### 4. Usage
@@ -27,6 +28,5 @@ python intent/extractor.py
 When prompted, type a request like `"an intermediate dragon with two heads"` to receive the structured output.
 
 ### 5. Customization
-* **Model Selection**: You can open [intent/extractor.py](intent/extractor.py) and change the `model` ID in the chat completion call to any model supported by Groq (e.g., `"qwen-2.5-32b-instruct"` or `"llama3-8b-8192"`).
 * **System Prompt**: Edit [intent/prompt.txt](intent/prompt.txt) to change how the model decomposes objects.
 * **JSON Schema**: Modify [intent/schema.json](intent/schema.json) to add or adjust output fields.

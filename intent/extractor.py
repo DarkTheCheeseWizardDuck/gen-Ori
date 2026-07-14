@@ -7,7 +7,6 @@ from groq import Groq
 
 DEBUG = False
 
-
 # -----------------------------
 # Paths
 # -----------------------------
@@ -23,10 +22,10 @@ api_key = os.getenv("GROQ_API_KEY")
 model = os.getenv("GROQ_MODEL")
 
 if not api_key:
-    raise ValueError(
-        "GROQ_API_KEY not found. Please create a .env file."
-    )
-
+    raise ValueError("GROQ_API_KEY not found. Please create a .env file.")
+if not model:
+    raise ValueError("GROQ_MODEL not found. Please create a .env file.")
+    
 client = Groq(api_key=api_key)
 
 # -----------------------------
@@ -53,67 +52,72 @@ except Exception as e:
 
 system_prompt = prompt_template.replace("{SCHEMA}", schema)
 
-# -----------------------------
-# User input
-# -----------------------------
-user_input = input("Origami request: ")
 
-# -----------------------------
-# Call Groq API
-# -----------------------------
-try:
-    response = client.chat.completions.create(
-        model= model,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_input}
-        ],
-        temperature=0.2,
-        # response_format={"type": "json_object"}
-    )
+# ==========================================================
+# Main extraction function
+# ==========================================================
+def extract_intent(user_input: str) -> dict:
+    """Extract structured origami intent from a natural language request."""
 
-except Exception as e:
-    print("\nGroq API call failed:")
-    print(e)
-    exit()
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": user_input
+                }
+            ],
+            temperature=0.2,
+            # response_format={"type": "json_object"}
+        )
 
-# -----------------------------
-# Raw response
-# -----------------------------
-raw = response.choices[0].message.content.strip()
-if DEBUG:
-    print("\n===== RAW RESPONSE =====")
-    print(raw)
-    print("========================\n")
+    except Exception as e:
+        raise RuntimeError(f"Groq API call failed:\n{e}")
 
-# -----------------------------
-# Remove Markdown code fences
-# -----------------------------
-if raw.startswith("```"):
-    lines = raw.splitlines()
+    raw = response.choices[0].message.content.strip()
 
-    if lines[0].startswith("```"):
-        lines = lines[1:]
+    if DEBUG:
+        print("\n===== RAW RESPONSE =====")
+        print(raw)
+        print("========================\n")
 
-    if lines and lines[-1].startswith("```"):
-        lines = lines[:-1]
+    # Remove Markdown code fences if present
+    if raw.startswith("```"):
+        lines = raw.splitlines()
 
-    raw = "\n".join(lines).strip()
+        if lines[0].startswith("```"):
+            lines = lines[1:]
 
-# -----------------------------
-# Parse JSON
-# -----------------------------
-try:
-    intent = json.loads(raw)
+        if lines and lines[-1].startswith("```"):
+            lines = lines[:-1]
 
-except json.JSONDecodeError:
-    print("Groq/Qwen did not return valid JSON.")
-    print("\nReturned text:\n")
-    print(raw)
-    exit()
+        raw = "\n".join(lines).strip()
 
-# -----------------------------
-# Display
-# -----------------------------
-print("Extracted Intent:\n")
-print(json.dumps(intent, indent=4, ensure_ascii=False))
+    try:
+        return json.loads(raw)
+
+    except json.JSONDecodeError:
+        raise RuntimeError(
+            "Groq/Qwen did not return valid JSON.\n\nReturned text:\n" + raw
+        )
+
+
+# ==========================================================
+# CLI
+# ==========================================================
+def main():
+    user_input = input("Origami request: ")
+
+    intent = extract_intent(user_input)
+
+    print("\nExtracted Intent:\n")
+    print(json.dumps(intent, indent=4, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()
