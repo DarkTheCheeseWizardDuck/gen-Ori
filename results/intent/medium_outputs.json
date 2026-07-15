@@ -24,7 +24,7 @@
                     {
                         "id": "ear_01",
                         "name": "ear",
-                        "length_weight": null,
+                        "length_weight": null, 
                         "symmetry": {
                             "group": "ear",
                             "side": "left",
