@@ -99,7 +99,6 @@ for i, test_case in enumerate(benchmark, start=1):
 
     results.append({
         "id": test_case["id"],
-        "description": test_case["description"],
         "input": test_case["input"],
         "output": output
     })

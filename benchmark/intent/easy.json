@@ -25,12 +25,10 @@
     },
     {
         "id": "E007",
-        "description": "Single explicit animal.",
         "input": "I want a dragonfly."
     },
     {
         "id": "E008",
-        "description": "Single object with explicit pose.",
         "input": "make me a 5 pedals orchid flower"
     },
     {
