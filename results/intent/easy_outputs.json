@@ -1,0 +1,129 @@
+[
+    {
+        "id": "E007",
+        "description": "Single explicit animal.",
+        "input": "I want a dragonfly.",
+        "output": {
+            "intent": {
+                "object": "dragonfly",
+                "difficulty": null
+            },
+            "structure": {
+                "parts": [
+                    {
+                        "id": "body_01",
+                        "name": "body",
+                        "length_weight": null,
+                        "symmetry": null
+                    },
+                    {
+                        "id": "head_01",
+                        "name": "head",
+                        "length_weight": null,
+                        "symmetry": null
+                    },
+                    {
+                        "id": "antenna_01",
+                        "name": "antenna",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "antenna",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "antenna_02",
+                        "name": "antenna",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "antenna",
+                            "side": "right",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "front_leg_01",
+                        "name": "front leg",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "front_leg",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "front_leg_02",
+                        "name": "front leg",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "front_leg",
+                            "side": "right",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "hind_leg_01",
+                        "name": "hind leg",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "hind_leg",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "hind_leg_02",
+                        "name": "hind leg",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "hind_leg",
+                            "side": "right",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "forewing_01",
+                        "name": "forewing",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "forewing",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "forewing_02",
+                        "name": "forewing",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "forewing",
+                            "side": "right",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "hindwing_01",
+                        "name": "hindwing",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "hindwing",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "hindwing_02",
+                        "name": "hindwing",
+                        "length_weight": null,
+                        "symmetry": {
+                            "group": "hindwing",
+                            "side": "right",
+                            "order_index": 2
+                        }
+                    }
+                ]
+            }
+        }
+    }
+]

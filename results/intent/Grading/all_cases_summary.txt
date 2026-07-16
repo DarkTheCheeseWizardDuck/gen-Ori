@@ -1,0 +1,131 @@
+=== E001 ===
+Input: I want an intermediate cat.
+Extracted Intent: {'object': 'cat', 'difficulty': 3}
+Parts Count: 9
+Parts: body, head, ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail
+
+=== E002 ===
+Input: I want a rabbit 
+Extracted Intent: {'object': 'rabbit', 'difficulty': None}
+Parts Count: 9
+Parts: body, head, ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail
+
+=== E003 ===
+Input: dog
+Extracted Intent: {'object': 'dog', 'difficulty': 3}
+Parts Count: 9
+Parts: body, head, ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail
+
+=== E004 ===
+Input: I want a white crane 
+Extracted Intent: {'object': 'white crane', 'difficulty': 3}
+Parts Count: 9
+Parts: body, head, wing (left, wing, idx:1), wing (right, wing, idx:2), leg (left, leg, idx:1), leg (right, leg, idx:2), neck, tail, beak
+
+=== E005 ===
+Input: give me a lion
+Extracted Intent: {'object': 'lion', 'difficulty': 3}
+Parts Count: 10
+Parts: body, head, mane (center, mane, idx:1), ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail
+
+=== E006 ===
+Input: make me sth cute
+Extracted Intent: {'object': 'cat', 'difficulty': 3}
+Parts Count: 9
+Parts: body, head, ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail
+
+=== E007 ===
+Input: I want a dragonfly.
+Extracted Intent: {'object': 'dragonfly', 'difficulty': None}
+Parts Count: 12
+Parts: body, head, antenna (left, antenna, idx:1), antenna (right, antenna, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), forewing (left, forewing, idx:1), forewing (right, forewing, idx:2), hindwing (left, hindwing, idx:1), hindwing (right, hindwing, idx:2)
+
+=== E008 ===
+Input: make me a 5 pedals orchid flower
+Extracted Intent: {'object': 'orchid flower', 'difficulty': 3}
+Parts Count: 7
+Parts: petal (center, petal, idx:1), petal (center, petal, idx:2), petal (center, petal, idx:3), petal (center, petal, idx:4), petal (center, petal, idx:5), center, stem
+
+=== E009 ===
+Input: make me a 5 pedals orchid flower with stem and leafs
+Extracted Intent: {'object': 'orchid flower', 'difficulty': 3}
+Parts Count: 8
+Parts: petal (left, petal, idx:1), petal (left, petal, idx:2), petal (center, petal, idx:3), petal (right, petal, idx:1), petal (right, petal, idx:2), stem, leaf (left, leaf, idx:1), leaf (right, leaf, idx:1)
+
+=== E010 ===
+Input: I want a Eupatorus gracilicornus.
+Extracted Intent: {'object': 'Eupatorus gracilicornus', 'difficulty': 3}
+Parts Count: 13
+Parts: head, thorax, abdomen, antenna (left, antenna, idx:1), antenna (right, antenna, idx:2), elytron (left, elytron, idx:1), elytron (right, elytron, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), middle leg (left, middle_leg, idx:1), middle leg (right, middle_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2)
+
+=== E011 ===
+Input: I want an easy bug 
+Extracted Intent: {'object': 'bug', 'difficulty': 1}
+Parts Count: 12
+Parts: body, head, antenna (left, antenna, idx:1), antenna (right, antenna, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), middle leg (left, middle_leg, idx:1), middle leg (right, middle_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), wing (left, wing, idx:1), wing (right, wing, idx:2)
+
+=== E012 ===
+Input: make me a butterfly
+Extracted Intent: {'object': 'butterfly', 'difficulty': 3}
+Parts Count: 9
+Parts: body (center, None, idx:None), wing (left, wing, idx:1), wing (right, wing, idx:2), antenna (left, antenna, idx:1), antenna (right, antenna, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2)
+
+=== E013 ===
+Input: snake
+Extracted Intent: {'object': 'snake', 'difficulty': 3}
+Parts Count: 3
+Parts: head, body, tail
+
+=== E014 ===
+Input: I want a simple elephant.
+Extracted Intent: {'object': 'elephant', 'difficulty': 1}
+Parts Count: 10
+Parts: body, head, trunk, ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail
+
+=== E015 ===
+Input: give me a penguin
+Extracted Intent: {'object': 'penguin', 'difficulty': 3}
+Parts Count: 7
+Parts: body, head, wing (left, wing, idx:1), wing (right, wing, idx:2), leg (left, leg, idx:1), leg (right, leg, idx:2), tail
+
+=== E016 ===
+Input: I want a ladybug.
+Extracted Intent: {'object': 'ladybug', 'difficulty': None}
+Parts Count: 12
+Parts: body, head, wing (left, wing, idx:1), wing (right, wing, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), middle leg (left, middle_leg, idx:1), middle leg (right, middle_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), antenna (left, antenna, idx:1), antenna (right, antenna, idx:2)
+
+=== E017 ===
+Input: make me a 4-leaf clover
+Extracted Intent: {'object': '4-leaf clover', 'difficulty': 2}
+Parts Count: 5
+Parts: stem, leaf (left, leaf, idx:1), leaf (left, leaf, idx:2), leaf (right, leaf, idx:1), leaf (right, leaf, idx:2)
+
+=== E018 ===
+Input: I want a complex scorpion with claws and a tail
+Extracted Intent: {'object': 'scorpion', 'difficulty': 4}
+Parts Count: 8
+Parts: cephalothorax, abdomen, claw (left, claw, idx:1), claw (right, claw, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2)
+
+=== E019 ===
+Input: make me a 6 petals lily flower with stem
+Extracted Intent: {'object': 'lily flower', 'difficulty': 3}
+Parts Count: 8
+Parts: petal (center, petal, idx:1), petal (center, petal, idx:2), petal (center, petal, idx:3), petal (center, petal, idx:4), petal (center, petal, idx:5), petal (center, petal, idx:6), stem, center
+
+=== E020 ===
+Input: I want a Tyrannosaurus rex.
+Extracted Intent: {'object': 'Tyrannosaurus rex', 'difficulty': 3}
+Parts Count: 7
+Parts: head, body, tail, leg (left, leg, idx:1), leg (right, leg, idx:2), arm (left, arm, idx:1), arm (right, arm, idx:2)
+
+=== E021 ===
+Input: I want a giraffe
+Extracted Intent: {'object': 'giraffe', 'difficulty': 3}
+Parts Count: 10
+Parts: body, head, neck, front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail, ear (left, ear, idx:1), ear (right, ear, idx:2)
+
+=== E022 ===
+Input: 
+Extracted Intent: {'object': 'cat', 'difficulty': 3}
+Parts Count: 9
+Parts: body, head, ear (left, ear, idx:1), ear (right, ear, idx:2), front leg (left, front_leg, idx:1), front leg (right, front_leg, idx:2), hind leg (left, hind_leg, idx:1), hind leg (right, hind_leg, idx:2), tail

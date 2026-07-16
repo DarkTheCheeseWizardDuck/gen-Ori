@@ -73,6 +73,7 @@ def extract_intent(user_input: str) -> dict:
                 }
             ],
             temperature=0.2,
+            max_tokens=4096
             # response_format={"type": "json_object"}
         )
 
@@ -85,6 +86,10 @@ def extract_intent(user_input: str) -> dict:
         print("\n===== RAW RESPONSE =====")
         print(raw)
         print("========================\n")
+
+    # Remove thinking block if present (e.g. from reasoning models)
+    if "</think>" in raw:
+        raw = raw.split("</think>", 1)[1].strip()
 
     # Remove Markdown code fences if present
     if raw.startswith("```"):
