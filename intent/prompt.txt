@@ -39,30 +39,6 @@ Parts that distinguish this object from similar objects.
 
 Ignore every other detail.
 
-Examples
-
-Bird
-- head
-- body
-- wings
-- tail
-- beak
-
-Stegosaurus
-- head
-- body
-- four legs
-- tail
-- back spikes
-
-Swordfish
-- head
-- body
-- bill
-- two fins
-- upper tail
-- lower tail
-
 Never include:
 
 - eyes
@@ -98,7 +74,7 @@ Prefer:
 - stem
 - pedal
 
-Avoid scientific or anatomical terminology such as:
+DO NOT use scientific or anatomical terminology such as:
 
 - dorsal fin
 - anal fin
@@ -142,8 +118,8 @@ Create the minimum number of body segments necessary.
 Split the body when:
 
 - More than one pair of limbs must attach to the same body vertex.
-- Significant parts must attach at multiple positions along the body's length.
-- The requested object cannot be represented with the available attachment vertices.
+- Significant parts must attach at multiple positions along the body's edge (fish's fins, flower's leaves, spikes on a stegosaurus, ... ).
+
 
 Guidelines
 
@@ -228,7 +204,7 @@ Output:
         "segment_index": null,
         "symmetry": {
           "group": "tail",
-          "side": "upper",
+          "side": "left",
           "order_index": 1
         }
       },
@@ -239,13 +215,10 @@ Output:
         "segment_index": null,
         "symmetry": {
           "group": "tail",
-          "side": "lower",
+          "side": "right",
           "order_index": 1
         }
       }
     ]
   }
 }
-
-Note:
-The fish uses two body segments because one body segment provides only two attachment vertices. Two body segments create three attachment vertices, allowing the head, fins, and tail to connect while satisfying the tree graph constraints.

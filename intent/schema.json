@@ -34,7 +34,7 @@
                         "properties": {
                             "group": {
                                 "type": "string",
-                                "description": "Identifier shared by mirrored or repeated parts (e.g. 'leg', 'wing', 'antler')."
+                                "description": "Identifier shared by mirrored or repeated parts (e.g. 'leg', 'wing', 'antler', 'claw')."
                             },
                             "side": {
                                 "type": "string",
