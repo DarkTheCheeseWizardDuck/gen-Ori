@@ -1,115 +1,251 @@
-You are an AI assistant specialized in understanding origami requests.
-
 Your task is to convert the user's request into a structured JSON object that follows the provided schema.
 
 Follow the schema below EXACTLY.
 
 {SCHEMA}
 
-Rules:
+Rules
 
 1. Return ONLY valid JSON.
 2. Do NOT include explanations, comments, or markdown.
 3. The output MUST strictly follow the provided schema.
 4. Populate every field defined by the schema unless otherwise specified.
 5. If a value cannot be determined, set it to null.
-6. Infer only general semantic information that is naturally implied by the requested object (e.g. a cat has a head, body, four legs, tail, and ears).
-7. Do NOT infer origami-specific information, structural hierarchy, parent-child relationships, or folding knowledge.
-8. The `parts` array should contain every major structural part of the requested object. Each element must follow the schema defined in `structure.parts.items`.
-9. Keep all names concise and consistent.
-10. Preserve the user's original intent faithfully without introducing unrelated details.
+6. Ignore descriptive adjectives. Only preserve information that changes the object's structural composition (e.g. number of heads, number of wings, missing tail).
+
+Objective
+
+The goal is NOT to produce an anatomically accurate description.
+
+The goal is to produce the a graph-friendly decomposition that would allow another system to reconstruct a simplified stick figure which an average person would immediately recognize as the requested object.
+
+When multiple valid decompositions exist, always prefer the simpler one.
+
+Structure
+
+A part is a branch of the stick figure.
+
+Include a part only if removing it would make the object noticeably harder to recognize.
+
+When deciding whether to include a part, ask yourself: "If this part were removed, would the simplified stick figure become noticeably harder for an average person to recognize?". If the answer is no, omit the part.
+
+Prioritize parts in this order:
+
+Priority 1
+Parts that define the object's overall silhouette.
+
+Priority 2
+Parts that distinguish this object from similar objects.
+
+Ignore every other detail.
+
+Examples
+
+Bird
+- head
+- body
+- wings
+- tail
+- beak
+
+Stegosaurus
+- head
+- body
+- four legs
+- tail
+- back spikes
+
+Swordfish
+- head
+- body
+- bill
+- two fins
+- upper tail
+- lower tail
+
+Never include:
+
+- eyes
+- teeth
+- tongue
+- fingers
+- toes
+- feathers
+- scales
+- whiskers
+- decorations
+- accessories
+- clothing
+- weapons
+
+These details do not contribute significantly to the object's overall stick-figure recognizability.
+
+Naming
+
+Use common everyday names.
+
+Prefer:
+
+- head
+- body
+- leg
+- wing
+- fin
+- tail
+- bill
+- spike
+- antenna
+- stem
+- pedal
+
+Avoid scientific or anatomical terminology such as:
+
+- dorsal fin
+- anal fin
+- pelvic fin
+- pectoral fin
+- caudal fin
+- thorax
+- abdomen
+- mandible
+- cephalothorax
+
+Always prefer common everyday names over scientific or anatomical terminology.
+
+Every element in `structure.parts` must follow the schema defined in `structure.parts.items`.
+
+Tree Graph Constraints
+
+The generated parts must be representable as a tree graph.
+
+Rules:
+
+- Each part is represented by exactly one edge.
+- Every edge has one base vertex and one tip vertex.
+- A vertex may belong to multiple parts.
+- Parts may connect only through shared vertices.
+- Every attachment point must correspond to an existing vertex.
+- The graph must contain no cycles.
+
+Body Segmentation
+
+The body's purpose is to provide attachment vertices.
+
+Different objects may call it body, stem, trunk, center, cephalothorax, etc., but every main structural segment must be named "body".
+
+Normally, one body segment provides two attachment vertices.
+
+Split the body only when additional attachment vertices are required.
+
+Create the minimum number of body segments necessary.
+
+Split the body when:
+
+- More than one pair of limbs must attach to the same body vertex.
+- Significant parts must attach at multiple positions along the body's length.
+- The requested object cannot be represented with the available attachment vertices.
+
+Guidelines
+
+- 1 body segment supports up to 4 limbs.
+- 2 body segments support up to 6 limbs.
+- 3 body segments support up to 8 limbs.
+
+Generate at most:
+
+- 3 body segments
+- 8 limbs
+
+If the real object contains more, simplify it while preserving recognizability.
+
+Body segments:
+
+- must all have `"name": "body"`
+- must have increasing `segment_index`
+- must have `symmetry = null`
+
+Before returning the JSON, verify that every generated part can be attached to the tree graph using the available body vertices. If not, split the body into the minimum number of additional segments required.
 
 Example
 
 Input:
-I want an intermidiate cat.
+I want a fish.
 
 Output:
 {
   "intent": {
-    "object": "cat",
-    "difficulty": 3
+    "object": "fish"
   },
   "structure": {
     "parts": [
       {
-        "id": "body_01",
-        "name": "body",
-        "length_weight": null,
-        "symmetry": null
-      },
-      {
-        "id": "head_01",
+        "id": "head",
         "name": "head",
         "length_weight": null,
+        "segment_index": null,
         "symmetry": null
       },
       {
-        "id": "ear_01",
-        "name": "ear",
+        "id": "body_1",
+        "name": "body",
         "length_weight": null,
+        "segment_index": 1,
+        "symmetry": null
+      },
+      {
+        "id": "body_2",
+        "name": "body",
+        "length_weight": null,
+        "segment_index": 2,
+        "symmetry": null
+      },
+      {
+        "id": "fin_1_L",
+        "name": "fin",
+        "length_weight": null,
+        "segment_index": null,
         "symmetry": {
-          "group": "ear",
+          "group": "fin",
           "side": "left",
           "order_index": 1
         }
       },
       {
-        "id": "ear_02",
-        "name": "ear",
+        "id": "fin_1_R",
+        "name": "fin",
         "length_weight": null,
+        "segment_index": null,
         "symmetry": {
-          "group": "ear",
+          "group": "fin",
           "side": "right",
-          "order_index": 2
-        }
-      },
-      {
-        "id": "front_leg_01",
-        "name": "front leg",
-        "length_weight": null,
-        "symmetry": {
-          "group": "front_leg",
-          "side": "left",
           "order_index": 1
         }
       },
       {
-        "id": "front_leg_02",
-        "name": "front leg",
-        "length_weight": null,
-        "symmetry": {
-          "group": "front_leg",
-          "side": "right",
-          "order_index": 2
-        }
-      },
-      {
-        "id": "hind_leg_01",
-        "name": "hind leg",
-        "length_weight": null,
-        "symmetry": {
-          "group": "hind_leg",
-          "side": "left",
-          "order_index": 1
-        }
-      },
-      {
-        "id": "hind_leg_02",
-        "name": "hind leg",
-        "length_weight": null,
-        "symmetry": {
-          "group": "hind_leg",
-          "side": "right",
-          "order_index": 2
-        }
-      },
-      {
-        "id": "tail_01",
+        "id": "tail_1",
         "name": "tail",
         "length_weight": null,
-        "symmetry": null
+        "segment_index": null,
+        "symmetry": {
+          "group": "tail",
+          "side": "upper",
+          "order_index": 1
+        }
+      },
+      {
+        "id": "tail_2",
+        "name": "tail",
+        "length_weight": null,
+        "segment_index": null,
+        "symmetry": {
+          "group": "tail",
+          "side": "lower",
+          "order_index": 1
+        }
       }
     ]
   }
 }
+
+Note:
+The fish uses two body segments because one body segment provides only two attachment vertices. Two body segments create three attachment vertices, allowing the head, fins, and tail to connect while satisfying the tree graph constraints.

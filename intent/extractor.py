@@ -99,14 +99,15 @@ def extract_intent(user_input: str) -> dict:
         raw = "\n".join(lines).strip()
 
     try:
-        return json.loads(raw)
+        intent = json.loads(raw)
+        return intent
 
     except json.JSONDecodeError:
         raise RuntimeError(
             "Groq/Qwen did not return valid JSON.\n\nReturned text:\n" + raw
         )
 
-
+        
 # ==========================================================
 # CLI
 # ==========================================================

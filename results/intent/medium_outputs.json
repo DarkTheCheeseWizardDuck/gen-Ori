@@ -1,128 +1,35 @@
 [
     {
-        "id": "E001",
-        "input": "I want an intermediate fox standing proudly with a large bushy tail.",
-        "output": {
-            "intent": {
-                "object": "fox",
-                "difficulty": 3
-            },
-            "structure": {
-                "parts": [
-                    {
-                        "id": "body_01",
-                        "name": "body",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "head_01",
-                        "name": "head",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "ear_01",
-                        "name": "ear",
-                        "length_weight": null, 
-                        "symmetry": {
-                            "group": "ear",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "ear_02",
-                        "name": "ear",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "ear",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "front_leg_01",
-                        "name": "front leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "front_leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "front_leg_02",
-                        "name": "front leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "front_leg",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "hind_leg_01",
-                        "name": "hind leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "hind_leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "hind_leg_02",
-                        "name": "hind leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "hind_leg",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "tail_01",
-                        "name": "tail",
-                        "length_weight": null,
-                        "symmetry": null
-                    }
-                ]
-            }
-        }
-    },
-    {
         "id": "E002",
         "input": "Give me a scorpian or a tarantula, as long as it's arachnid.",
         "output": {
             "intent": {
-                "object": "scorpion",
-                "difficulty": null
+                "object": "scorpion"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "body_1",
                         "length_weight": null,
+                        "segment_index": 1,
                         "symmetry": null
                     },
                     {
-                        "id": "tail_01",
-                        "name": "tail",
+                        "id": "body_2",
                         "length_weight": null,
+                        "segment_index": 2,
                         "symmetry": null
                     },
                     {
-                        "id": "stinger_01",
-                        "name": "stinger",
+                        "id": "body_3",
                         "length_weight": null,
+                        "segment_index": 3,
                         "symmetry": null
                     },
                     {
-                        "id": "pedipalp_01",
-                        "name": "pedipalp",
+                        "id": "pedipalp_1_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pedipalp",
                             "side": "left",
@@ -130,39 +37,59 @@
                         }
                     },
                     {
-                        "id": "pedipalp_02",
-                        "name": "pedipalp",
+                        "id": "pedipalp_1_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pedipalp",
+                            "side": "right",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "leg_1_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "leg_1_R",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "right",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "leg_2_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "leg_2_R",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
                             "side": "right",
                             "order_index": 2
                         }
                     },
                     {
-                        "id": "leg_01",
-                        "name": "leg",
+                        "id": "leg_3_L",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "leg_02",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "leg_03",
-                        "name": "leg",
-                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -170,9 +97,29 @@
                         }
                     },
                     {
-                        "id": "leg_04",
-                        "name": "leg",
+                        "id": "leg_3_R",
                         "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "right",
+                            "order_index": 3
+                        }
+                    },
+                    {
+                        "id": "leg_4_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 4
+                        }
+                    },
+                    {
+                        "id": "leg_4_R",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
@@ -180,24 +127,10 @@
                         }
                     },
                     {
-                        "id": "leg_05",
-                        "name": "leg",
+                        "id": "tail",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 5
-                        }
-                    },
-                    {
-                        "id": "leg_06",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 6
-                        }
+                        "segment_index": null,
+                        "symmetry": null
                     }
                 ]
             }
@@ -208,39 +141,38 @@
         "input": "Can you do a lionfish?",
         "output": {
             "intent": {
-                "object": "lionfish",
-                "difficulty": null
+                "object": "lionfish"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "head",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "head_01",
-                        "name": "head",
+                        "id": "body",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "dorsal_fin_01",
-                        "name": "dorsal fin",
+                        "id": "dorsal_fin",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "anal_fin_01",
-                        "name": "anal fin",
+                        "id": "anal_fin",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "pectoral_fin_01",
-                        "name": "pectoral fin",
+                        "id": "pectoral_fin_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pectoral_fin",
                             "side": "left",
@@ -248,19 +180,19 @@
                         }
                     },
                     {
-                        "id": "pectoral_fin_02",
-                        "name": "pectoral fin",
+                        "id": "pectoral_fin_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pectoral_fin",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "pelvic_fin_01",
-                        "name": "pelvic fin",
+                        "id": "pelvic_fin_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pelvic_fin",
                             "side": "left",
@@ -268,19 +200,19 @@
                         }
                     },
                     {
-                        "id": "pelvic_fin_02",
-                        "name": "pelvic fin",
+                        "id": "pelvic_fin_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pelvic_fin",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "caudal_fin_01",
-                        "name": "caudal fin",
+                        "id": "caudal_fin",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     }
                 ]
@@ -292,33 +224,50 @@
         "input": "Please make a long, slender lionfish using kami paper.",
         "output": {
             "intent": {
-                "object": "lionfish",
-                "difficulty": 4
+                "object": "lionfish"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "head",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "dorsal_fin_01",
-                        "name": "dorsal fin",
+                        "id": "body_1",
                         "length_weight": null,
+                        "segment_index": 1,
                         "symmetry": null
                     },
                     {
-                        "id": "anal_fin_01",
-                        "name": "anal fin",
+                        "id": "body_2",
                         "length_weight": null,
+                        "segment_index": 2,
                         "symmetry": null
                     },
                     {
-                        "id": "pectoral_fin_01",
-                        "name": "pectoral fin",
+                        "id": "body_3",
                         "length_weight": null,
+                        "segment_index": 3,
+                        "symmetry": null
+                    },
+                    {
+                        "id": "dorsal_fin",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": null
+                    },
+                    {
+                        "id": "anal_fin",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": null
+                    },
+                    {
+                        "id": "pectoral_fin_L",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pectoral_fin",
                             "side": "left",
@@ -326,19 +275,19 @@
                         }
                     },
                     {
-                        "id": "pectoral_fin_02",
-                        "name": "pectoral fin",
+                        "id": "pectoral_fin_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pectoral_fin",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "pelvic_fin_01",
-                        "name": "pelvic fin",
+                        "id": "pelvic_fin_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pelvic_fin",
                             "side": "left",
@@ -346,37 +295,19 @@
                         }
                     },
                     {
-                        "id": "pelvic_fin_02",
-                        "name": "pelvic fin",
+                        "id": "pelvic_fin_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "pelvic_fin",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "caudal_fin_01",
-                        "name": "caudal fin",
+                        "id": "caudal_fin",
                         "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "long_dorsal_spine_01",
-                        "name": "long dorsal spine",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "long_dorsal_spine_02",
-                        "name": "long dorsal spine",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "long_dorsal_spine_03",
-                        "name": "long dorsal spine",
-                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     }
                 ]
@@ -388,33 +319,38 @@
         "input": "I'd like a detail european dragon breathing fire with its wings fully spread, folded from A4 paper.",
         "output": {
             "intent": {
-                "object": "european dragon",
-                "difficulty": 5
+                "object": "european dragon"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "head",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "head_01",
-                        "name": "head",
+                        "id": "body_1",
                         "length_weight": null,
+                        "segment_index": 1,
                         "symmetry": null
                     },
                     {
-                        "id": "neck_01",
-                        "name": "neck",
+                        "id": "body_2",
                         "length_weight": null,
+                        "segment_index": 2,
                         "symmetry": null
                     },
                     {
-                        "id": "wing_01",
-                        "name": "wing",
+                        "id": "body_3",
                         "length_weight": null,
+                        "segment_index": 3,
+                        "symmetry": null
+                    },
+                    {
+                        "id": "wing_1_L",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "wing",
                             "side": "left",
@@ -422,19 +358,19 @@
                         }
                     },
                     {
-                        "id": "wing_02",
-                        "name": "wing",
+                        "id": "wing_1_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "wing",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "leg_01",
-                        "name": "leg",
+                        "id": "leg_1_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -442,9 +378,29 @@
                         }
                     },
                     {
-                        "id": "leg_02",
-                        "name": "leg",
+                        "id": "leg_1_R",
                         "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "right",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "leg_2_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "leg_2_R",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
@@ -452,36 +408,10 @@
                         }
                     },
                     {
-                        "id": "tail_01",
-                        "name": "tail",
+                        "id": "tail",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
-                    },
-                    {
-                        "id": "fire_01",
-                        "name": "fire",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "claw_01",
-                        "name": "claw",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "claw",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "claw_02",
-                        "name": "claw",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "claw",
-                            "side": "right",
-                            "order_index": 2
-                        }
                     }
                 ]
             }
@@ -492,47 +422,38 @@
         "input": "I'd like a detail european dragon breathing fire with 2 hind legs, 2 front legs and wings intergared, posing like it's flying through the sky.",
         "output": {
             "intent": {
-                "object": "european dragon",
-                "difficulty": 5
+                "object": "european dragon"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "head",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "head_01",
-                        "name": "head",
+                        "id": "body_1",
                         "length_weight": null,
+                        "segment_index": 1,
                         "symmetry": null
                     },
                     {
-                        "id": "front_leg_01",
-                        "name": "front leg",
+                        "id": "body_2",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "front_leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
+                        "segment_index": 2,
+                        "symmetry": null
                     },
                     {
-                        "id": "front_leg_02",
-                        "name": "front leg",
+                        "id": "body_3",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "front_leg",
-                            "side": "right",
-                            "order_index": 2
-                        }
+                        "segment_index": 3,
+                        "symmetry": null
                     },
                     {
-                        "id": "hind_leg_01",
-                        "name": "hind leg",
+                        "id": "hind_leg_1_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "hind_leg",
                             "side": "left",
@@ -540,19 +461,39 @@
                         }
                     },
                     {
-                        "id": "hind_leg_02",
-                        "name": "hind leg",
+                        "id": "hind_leg_1_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "hind_leg",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "wing_01",
-                        "name": "wing",
+                        "id": "front_leg_1_L",
                         "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "front_leg",
+                            "side": "left",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "front_leg_1_R",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "front_leg",
+                            "side": "right",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "wing_1_L",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "wing",
                             "side": "left",
@@ -560,118 +501,14 @@
                         }
                     },
                     {
-                        "id": "wing_02",
-                        "name": "wing",
+                        "id": "wing_1_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "wing",
                             "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "tail_01",
-                        "name": "tail",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "fire_01",
-                        "name": "fire",
-                        "length_weight": null,
-                        "symmetry": null
-                    }
-                ]
-            }
-        }
-    },
-    {
-        "id": "E007",
-        "input": "I've always liked foxes, so I'd love an intermediate one with a really fluffy tail. It doesn't have to be super realistic.",
-        "output": {
-            "intent": {
-                "object": "fox",
-                "difficulty": 3
-            },
-            "structure": {
-                "parts": [
-                    {
-                        "id": "body_01",
-                        "name": "body",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "head_01",
-                        "name": "head",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "ear_01",
-                        "name": "ear",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "ear",
-                            "side": "left",
                             "order_index": 1
                         }
-                    },
-                    {
-                        "id": "ear_02",
-                        "name": "ear",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "ear",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "front_leg_01",
-                        "name": "front leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "front_leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "front_leg_02",
-                        "name": "front leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "front_leg",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "hind_leg_01",
-                        "name": "hind leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "hind_leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "hind_leg_02",
-                        "name": "hind leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "hind_leg",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "tail_01",
-                        "name": "tail",
-                        "length_weight": null,
-                        "symmetry": null
                     }
                 ]
             }
@@ -682,80 +519,53 @@
         "input": "make me a blue Swordfish, fold from a 4A paper",
         "output": {
             "intent": {
-                "object": "swordfish",
-                "difficulty": null
+                "object": "blue swordfish"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "body",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "dorsal_fin_01",
-                        "name": "dorsal fin",
+                        "id": "dorsal_fin",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "anal_fin_01",
-                        "name": "anal fin",
+                        "id": "anal_fin",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "caudal_fin_01",
-                        "name": "caudal fin",
+                        "id": "caudal_fin_L",
                         "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "bill_01",
-                        "name": "bill",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "pectoral_fin_01",
-                        "name": "pectoral fin",
-                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "pectoral_fin",
+                            "group": "caudal_fin",
                             "side": "left",
                             "order_index": 1
                         }
                     },
                     {
-                        "id": "pectoral_fin_02",
-                        "name": "pectoral fin",
+                        "id": "caudal_fin_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "pectoral_fin",
+                            "group": "caudal_fin",
                             "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "ventral_fin_01",
-                        "name": "ventral fin",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "ventral_fin",
-                            "side": "left",
                             "order_index": 1
                         }
                     },
                     {
-                        "id": "ventral_fin_02",
-                        "name": "ventral fin",
+                        "id": "sword",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "ventral_fin",
-                            "side": "right",
-                            "order_index": 2
-                        }
+                        "segment_index": null,
+                        "symmetry": null
                     }
                 ]
             }
@@ -766,71 +576,70 @@
         "input": "Can you make a Lotus flower with its pedals and leaves?",
         "output": {
             "intent": {
-                "object": "Lotus flower",
-                "difficulty": null
+                "object": "Lotus flower"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "center_01",
-                        "name": "center",
+                        "id": "body",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "petal_01",
-                        "name": "petal",
+                        "id": "pedal_1",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "petal",
+                            "group": "pedal",
                             "side": "center",
                             "order_index": 1
                         }
                     },
                     {
-                        "id": "petal_02",
-                        "name": "petal",
+                        "id": "pedal_2",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "petal",
+                            "group": "pedal",
                             "side": "center",
                             "order_index": 2
                         }
                     },
                     {
-                        "id": "petal_03",
-                        "name": "petal",
+                        "id": "pedal_3",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "petal",
+                            "group": "pedal",
                             "side": "center",
                             "order_index": 3
                         }
                     },
                     {
-                        "id": "petal_04",
-                        "name": "petal",
+                        "id": "pedal_4",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "petal",
+                            "group": "pedal",
                             "side": "center",
                             "order_index": 4
                         }
                     },
                     {
-                        "id": "petal_05",
-                        "name": "petal",
+                        "id": "pedal_5",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
-                            "group": "petal",
+                            "group": "pedal",
                             "side": "center",
                             "order_index": 5
                         }
                     },
                     {
-                        "id": "leaf_01",
-                        "name": "leaf",
+                        "id": "leaf_1",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leaf",
                             "side": "left",
@@ -838,20 +647,14 @@
                         }
                     },
                     {
-                        "id": "leaf_02",
-                        "name": "leaf",
+                        "id": "leaf_2",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leaf",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
-                    },
-                    {
-                        "id": "stem_01",
-                        "name": "stem",
-                        "length_weight": null,
-                        "symmetry": null
                     }
                 ]
             }
@@ -862,239 +665,38 @@
         "input": "Do me a centipede, I want it as realistic as possible",
         "output": {
             "intent": {
-                "object": "centipede",
-                "difficulty": 5
+                "object": "centipede"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "head_01",
-                        "name": "head",
+                        "id": "head",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "body_1",
                         "length_weight": null,
+                        "segment_index": 1,
                         "symmetry": null
                     },
                     {
-                        "id": "antennae_01",
-                        "name": "antennae",
+                        "id": "body_2",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "antennae",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "antennae_02",
-                        "name": "antennae",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "antennae",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "leg_01",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 1
-                        }
-                    },
-                    {
-                        "id": "leg_02",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 2
-                        }
-                    },
-                    {
-                        "id": "leg_03",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 3
-                        }
-                    },
-                    {
-                        "id": "leg_04",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 4
-                        }
-                    },
-                    {
-                        "id": "leg_05",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 5
-                        }
-                    },
-                    {
-                        "id": "leg_06",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 6
-                        }
-                    },
-                    {
-                        "id": "leg_07",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 7
-                        }
-                    },
-                    {
-                        "id": "leg_08",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 8
-                        }
-                    },
-                    {
-                        "id": "leg_09",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 9
-                        }
-                    },
-                    {
-                        "id": "leg_10",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 10
-                        }
-                    },
-                    {
-                        "id": "leg_11",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 11
-                        }
-                    },
-                    {
-                        "id": "leg_12",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 12
-                        }
-                    },
-                    {
-                        "id": "leg_13",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 13
-                        }
-                    },
-                    {
-                        "id": "leg_14",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 14
-                        }
-                    },
-                    {
-                        "id": "leg_15",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 15
-                        }
-                    },
-                    {
-                        "id": "leg_16",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 16
-                        }
-                    },
-                    {
-                        "id": "tail_01",
-                        "name": "tail",
-                        "length_weight": null,
-                        "symmetry": null
-                    }
-                ]
-            }
-        }
-    },
-    {
-        "id": "E011",
-        "input": "Do me a really hard centipede, I want 2 big antenas and 10 pairs of legs",
-        "output": {
-            "intent": {
-                "object": "centipede",
-                "difficulty": 5
-            },
-            "structure": {
-                "parts": [
-                    {
-                        "id": "body_01",
-                        "name": "body",
-                        "length_weight": null,
+                        "segment_index": 2,
                         "symmetry": null
                     },
                     {
-                        "id": "head_01",
-                        "name": "head",
+                        "id": "body_3",
                         "length_weight": null,
+                        "segment_index": 3,
                         "symmetry": null
                     },
                     {
-                        "id": "antenna_01",
-                        "name": "antenna",
+                        "id": "antenna_1_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "antenna",
                             "side": "left",
@@ -1102,19 +704,19 @@
                         }
                     },
                     {
-                        "id": "antenna_02",
-                        "name": "antenna",
+                        "id": "antenna_1_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "antenna",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "leg_01",
-                        "name": "leg",
+                        "id": "leg_1_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -1122,9 +724,29 @@
                         }
                     },
                     {
-                        "id": "leg_02",
-                        "name": "leg",
+                        "id": "leg_1_R",
                         "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "right",
+                            "order_index": 1
+                        }
+                    },
+                    {
+                        "id": "leg_2_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 2
+                        }
+                    },
+                    {
+                        "id": "leg_2_R",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
@@ -1132,9 +754,9 @@
                         }
                     },
                     {
-                        "id": "leg_03",
-                        "name": "leg",
+                        "id": "leg_3_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -1142,9 +764,29 @@
                         }
                     },
                     {
-                        "id": "leg_04",
-                        "name": "leg",
+                        "id": "leg_3_R",
                         "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "right",
+                            "order_index": 3
+                        }
+                    },
+                    {
+                        "id": "leg_4_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 4
+                        }
+                    },
+                    {
+                        "id": "leg_4_R",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
@@ -1152,9 +794,9 @@
                         }
                     },
                     {
-                        "id": "leg_05",
-                        "name": "leg",
+                        "id": "leg_5_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -1162,9 +804,29 @@
                         }
                     },
                     {
-                        "id": "leg_06",
-                        "name": "leg",
+                        "id": "leg_5_R",
                         "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "right",
+                            "order_index": 5
+                        }
+                    },
+                    {
+                        "id": "leg_6_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
+                            "order_index": 6
+                        }
+                    },
+                    {
+                        "id": "leg_6_R",
+                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
@@ -1172,9 +834,9 @@
                         }
                     },
                     {
-                        "id": "leg_07",
-                        "name": "leg",
+                        "id": "leg_7_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -1182,133 +844,33 @@
                         }
                     },
                     {
-                        "id": "leg_08",
-                        "name": "leg",
+                        "id": "leg_7_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
+                            "order_index": 7
+                        }
+                    },
+                    {
+                        "id": "leg_8_L",
+                        "length_weight": null,
+                        "segment_index": null,
+                        "symmetry": {
+                            "group": "leg",
+                            "side": "left",
                             "order_index": 8
                         }
                     },
                     {
-                        "id": "leg_09",
-                        "name": "leg",
+                        "id": "leg_8_R",
                         "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 9
-                        }
-                    },
-                    {
-                        "id": "leg_10",
-                        "name": "leg",
-                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
-                            "order_index": 10
-                        }
-                    },
-                    {
-                        "id": "leg_11",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 11
-                        }
-                    },
-                    {
-                        "id": "leg_12",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 12
-                        }
-                    },
-                    {
-                        "id": "leg_13",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 13
-                        }
-                    },
-                    {
-                        "id": "leg_14",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 14
-                        }
-                    },
-                    {
-                        "id": "leg_15",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 15
-                        }
-                    },
-                    {
-                        "id": "leg_16",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 16
-                        }
-                    },
-                    {
-                        "id": "leg_17",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 17
-                        }
-                    },
-                    {
-                        "id": "leg_18",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 18
-                        }
-                    },
-                    {
-                        "id": "leg_19",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "left",
-                            "order_index": 19
-                        }
-                    },
-                    {
-                        "id": "leg_20",
-                        "name": "leg",
-                        "length_weight": null,
-                        "symmetry": {
-                            "group": "leg",
-                            "side": "right",
-                            "order_index": 20
+                            "order_index": 8
                         }
                     }
                 ]
@@ -1320,33 +882,26 @@
         "input": "I'ld love a parot, but Im not always good with paper. Can I have a captain pirate parot?",
         "output": {
             "intent": {
-                "object": "pirate parrot",
-                "difficulty": 2
+                "object": "captain pirate parrot"
             },
             "structure": {
                 "parts": [
                     {
-                        "id": "body_01",
-                        "name": "body",
+                        "id": "head",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "head_01",
-                        "name": "head",
+                        "id": "body",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": null
                     },
                     {
-                        "id": "beak_01",
-                        "name": "beak",
+                        "id": "wing_L",
                         "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "wing_01",
-                        "name": "wing",
-                        "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "wing",
                             "side": "left",
@@ -1354,19 +909,19 @@
                         }
                     },
                     {
-                        "id": "wing_02",
-                        "name": "wing",
+                        "id": "wing_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "wing",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
                     },
                     {
-                        "id": "leg_01",
-                        "name": "leg",
+                        "id": "leg_L",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "left",
@@ -1374,32 +929,14 @@
                         }
                     },
                     {
-                        "id": "leg_02",
-                        "name": "leg",
+                        "id": "leg_R",
                         "length_weight": null,
+                        "segment_index": null,
                         "symmetry": {
                             "group": "leg",
                             "side": "right",
-                            "order_index": 2
+                            "order_index": 1
                         }
-                    },
-                    {
-                        "id": "tail_01",
-                        "name": "tail",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "eye_patch_01",
-                        "name": "eye patch",
-                        "length_weight": null,
-                        "symmetry": null
-                    },
-                    {
-                        "id": "bandana_01",
-                        "name": "bandana",
-                        "length_weight": null,
-                        "symmetry": null
                     }
                 ]
             }

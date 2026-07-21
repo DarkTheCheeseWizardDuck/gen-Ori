@@ -3,11 +3,6 @@
         "object": {
             "type": "string",
             "description": "Specific object requested by the user."
-        },   
-        "difficulty": {
-            "type": "integer",
-            "range": [1, 5],
-             "description": "Requested folding difficulty level."
         }
     },
     "structure": {
@@ -19,15 +14,19 @@
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "Unique identifier for this specific part instance. Distinguishes it from other parts with the same name (e.g. 'leg_01' vs 'leg_02')."
+                        "description": "Unique identifier for this specific part instance. Distinguishes it from other parts with the same name (e.g. 'leg_1_L' vs 'leg_1_R')."
                     },
                     "name": {
                         "type": "string",
-                        "description": "Semantic label for the part (e.g. 'head', 'leg', 'tail', 'wing')."
+                        "description": "Semantic label for the part (e.g. 'head', 'leg', 'tail', 'wing', 'body', 'fin')."
                     },
                     "length_weight": {
                         "type": "number",
                         "description": "Relative importance of the part, used as an initial estimate for stick length during tree generation."
+                    },
+                    "segment_index": {
+                        "type": ["integer", "null"],
+                        "description": "Position of this part within a chained body sequence (1, 2, 3, ...), used only for objects whose body is split into multiple sticks to provide enough joints for many limb-pairs (e.g. an ant's body_1/body_2). Null for every part that is not a body segment."
                     },
                     "symmetry": {
                         "type": "object",
@@ -48,7 +47,7 @@
                             },
                             "order_index": {
                                 "type": "integer",
-                                "description": "Index used to distinguish multiple repeated parts within the same symmetry group (e.g. front leg vs back leg)."
+                                "description": "Position of this repeated pair/group along the object's main axis (1, 2, 3, ...), used to line up against a body chain's segment_index when there are more than two repeated groups (e.g. leg_1, leg_2, leg_3 on an ant)."
                             }
                         }
                     }
