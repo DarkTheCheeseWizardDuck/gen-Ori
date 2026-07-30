@@ -22,7 +22,8 @@
                     },
                     "length_weight": {
                         "type": "number",
-                        "description": "Relative importance of the part, used as an initial estimate for stick length during tree generation."
+                        "range": [0, "√2"],
+                        "description": "Normalized stick length of the part. The set of part lengths must describe a stick figure that fits within the unit square bounded by (0,0) and (1,1)."
                     },
                     "segment_index": {
                         "type": ["integer", "null"],

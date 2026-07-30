@@ -3,7 +3,10 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from groq import Groq
+from google import genai
+
+# Import assign_length_weights from the length assignment module.
+from length_assign import assign_length_weights
 
 DEBUG = False
 
@@ -18,15 +21,16 @@ CURRENT_DIR = Path(__file__).resolve().parent
 # -----------------------------
 load_dotenv(ROOT_DIR / ".env")
 
-api_key = os.getenv("GROQ_API_KEY")
-model = os.getenv("GROQ_MODEL")
+api_key = os.getenv("GEMINI_API_KEY")
+model = os.getenv("GEMINI_MODEL")
 
 if not api_key:
-    raise ValueError("GROQ_API_KEY not found. Please create a .env file.")
+    raise ValueError("GEMINI_API_KEY not found. Please create a .env file.")
+
 if not model:
-    raise ValueError("GROQ_MODEL not found. Please create a .env file.")
-    
-client = Groq(api_key=api_key)
+    raise ValueError("GEMINI_MODEL not found. Please create a .env file.")
+
+client = genai.Client(api_key=api_key)
 
 # -----------------------------
 # Load schema
@@ -60,26 +64,21 @@ def extract_intent(user_input: str) -> dict:
     """Extract structured origami intent from a natural language request."""
 
     try:
-        response = client.chat.completions.create(
+        response = client.models.generate_content(
             model=model,
-            messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt
-                },
-                {
-                    "role": "user",
-                    "content": user_input
-                }
+            contents=[
+                system_prompt,
+                user_input
             ],
-            temperature=0.2,
-            # response_format={"type": "json_object"}
+            config={
+                "temperature": 0.2
+            }
         )
 
     except Exception as e:
-        raise RuntimeError(f"Groq API call failed:\n{e}")
+        raise RuntimeError(f"Gemini API call failed:\n{e}")
 
-    raw = response.choices[0].message.content.strip()
+    raw = response.text.strip()
 
     if DEBUG:
         print("\n===== RAW RESPONSE =====")
@@ -104,21 +103,5 @@ def extract_intent(user_input: str) -> dict:
 
     except json.JSONDecodeError:
         raise RuntimeError(
-            "Groq/Qwen did not return valid JSON.\n\nReturned text:\n" + raw
+            "Gemini did not return valid JSON.\n\nReturned text:\n" + raw
         )
-
-        
-# ==========================================================
-# CLI
-# ==========================================================
-def main():
-    user_input = input("Origami request: ")
-
-    intent = extract_intent(user_input)
-
-    print("\nExtracted Intent:\n")
-    print(json.dumps(intent, indent=4, ensure_ascii=False))
-
-
-if __name__ == "__main__":
-    main()
