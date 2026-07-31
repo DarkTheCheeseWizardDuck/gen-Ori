@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from google import genai
+from groq import Groq
 
 # Import assign_length_weights from the length assignment module.
 from length_assign import assign_length_weights
@@ -21,16 +21,16 @@ CURRENT_DIR = Path(__file__).resolve().parent
 # -----------------------------
 load_dotenv(ROOT_DIR / ".env")
 
-api_key = os.getenv("GEMINI_API_KEY")
-model = os.getenv("GEMINI_MODEL")
+api_key = os.getenv("GROQ_API_KEY")
+model = os.getenv("GROQ_MODEL")
 
 if not api_key:
-    raise ValueError("GEMINI_API_KEY not found. Please create a .env file.")
+    raise ValueError("GROQ_API_KEY not found. Please create a .env file.")
 
 if not model:
-    raise ValueError("GEMINI_MODEL not found. Please create a .env file.")
+    raise ValueError("GROQ_MODEL not found. Please create a .env file.")
 
-client = genai.Client(api_key=api_key)
+client = Groq(api_key=api_key)
 
 # -----------------------------
 # Load schema
@@ -60,25 +60,23 @@ system_prompt = prompt_template.replace("{SCHEMA}", schema)
 # ==========================================================
 # Main extraction function
 # ==========================================================
-def extract_intent(user_input: str) -> dict:
-    """Extract structured origami intent from a natural language request."""
+def extract_structure(user_input: str) -> dict:
+    """Extract structure from a natural language request."""
 
     try:
-        response = client.models.generate_content(
+        response = client.chat.completions.create(
             model=model,
-            contents=[
-                system_prompt,
-                user_input
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_input}
             ],
-            config={
-                "temperature": 0.2
-            }
+            temperature=0.2,
         )
 
     except Exception as e:
-        raise RuntimeError(f"Gemini API call failed:\n{e}")
+        raise RuntimeError(f"Groq API call failed:\n{e}")
 
-    raw = response.text.strip()
+    raw = response.choices[0].message.content.strip()
 
     if DEBUG:
         print("\n===== RAW RESPONSE =====")
@@ -98,10 +96,23 @@ def extract_intent(user_input: str) -> dict:
         raw = "\n".join(lines).strip()
 
     try:
-        intent = json.loads(raw)
-        return intent
+        structure = json.loads(raw)
+        return structure
 
     except json.JSONDecodeError:
         raise RuntimeError(
-            "Gemini did not return valid JSON.\n\nReturned text:\n" + raw
+            "Groq did not return valid JSON.\n\nReturned text:\n" + raw
         )
+
+
+def main():
+    """Run extraction directly from this module."""
+    user_input = input("Origami request: ")
+    result = extract_structure(user_input)
+
+    print("\nExtracted structure:\n")
+    print(json.dumps(result, indent=4, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

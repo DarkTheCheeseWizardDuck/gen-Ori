@@ -6,14 +6,14 @@ Run this instead of extractor.py directly.
 
 import json
 
-from extractor import extract_intent
+from extractor import extract_structure
 from length_assign import assign_length_weights
 
 
 def run_pipeline(user_input: str) -> dict:
-    intent = extract_intent(user_input)
-    intent = assign_length_weights(intent)  # overwrite with the length-filled version
-    return intent
+    structure = extract_structure(user_input)
+    structure = assign_length_weights(structure)  # overwrite with the length-filled version
+    return structure
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
 
     result = run_pipeline(user_input)
 
-    print("\nFinal Intent:\n")
+    print("\nFinal Structure:\n")
     print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
