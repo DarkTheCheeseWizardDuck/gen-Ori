@@ -1,7 +1,46 @@
 [
     {
+        "id": "E001",
+        "input": "I want an intermediate cat."
+    },
+    {
+        "id": "E002",
+        "input": "I want a rabbit "
+    },
+    {
+        "id": "E003",
+        "input": "dog"
+    },
+    {
+        "id": "E004",
+        "input": "I want a white crane "
+    },
+    {
+        "id": "E005",
+        "input": "give me a lion"
+    },
+    {
+        "id": "E006",
+        "input": "make me sth cute"
+    },
+    {
         "id": "E007",
-        "description": "Single explicit animal.",
         "input": "I want a dragonfly."
+    },
+    {
+        "id": "E008",
+        "input": "make me a 5 pedals orchid flower"
+    },
+    {
+        "id": "E009",
+        "input": "make me a 5 pedals orchid flower with stem and leafs"
+    },
+    {
+        "id": "E010",
+        "input": "I want a Eupatorus gracilicornus."
+    },
+     {
+        "id": "E011",
+        "input": "I want an easy bug "
     }
 ]

@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from extractor import extract_intent
+from pipeline import run_pipeline
 
 # ==========================================================
 # Paths
@@ -89,7 +89,7 @@ for i, test_case in enumerate(benchmark, start=1):
     print(f"[{i}/{len(benchmark)}] {test_case['id']}")
 
     try:
-        output = extract_intent(test_case["input"])
+        output = run_pipeline(test_case["input"])
 
     except Exception as e:
         # Don't stop the whole benchmark if one request fails.
@@ -99,7 +99,6 @@ for i, test_case in enumerate(benchmark, start=1):
 
     results.append({
         "id": test_case["id"],
-        "description": test_case.get("description"),
         "input": test_case["input"],
         "output": output
     })

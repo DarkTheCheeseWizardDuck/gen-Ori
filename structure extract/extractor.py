@@ -5,6 +5,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from groq import Groq
 
+# Import assign_length_weights from the length assignment module.
+from length_assign import assign_length_weights
+
 DEBUG = False
 
 # -----------------------------
@@ -23,9 +26,10 @@ model = os.getenv("GROQ_MODEL")
 
 if not api_key:
     raise ValueError("GROQ_API_KEY not found. Please create a .env file.")
+
 if not model:
     raise ValueError("GROQ_MODEL not found. Please create a .env file.")
-    
+
 client = Groq(api_key=api_key)
 
 # -----------------------------
@@ -56,21 +60,15 @@ system_prompt = prompt_template.replace("{SCHEMA}", schema)
 # ==========================================================
 # Main extraction function
 # ==========================================================
-def extract_intent(user_input: str) -> dict:
-    """Extract structured origami intent from a natural language request."""
+def extract_structure(user_input: str) -> dict:
+    """Extract structure from a natural language request."""
 
     try:
         response = client.chat.completions.create(
             model=model,
             messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt
-                },
-                {
-                    "role": "user",
-                    "content": user_input
-                }
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_input}
             ],
             temperature=0.2,
             max_tokens=4096
@@ -104,24 +102,22 @@ def extract_intent(user_input: str) -> dict:
         raw = "\n".join(lines).strip()
 
     try:
-        return json.loads(raw)
+        structure = json.loads(raw)
+        return structure
 
     except json.JSONDecodeError:
         raise RuntimeError(
-            "Groq/Qwen did not return valid JSON.\n\nReturned text:\n" + raw
+            "Groq did not return valid JSON.\n\nReturned text:\n" + raw
         )
 
 
-# ==========================================================
-# CLI
-# ==========================================================
 def main():
+    """Run extraction directly from this module."""
     user_input = input("Origami request: ")
+    result = extract_structure(user_input)
 
-    intent = extract_intent(user_input)
-
-    print("\nExtracted Intent:\n")
-    print(json.dumps(intent, indent=4, ensure_ascii=False))
+    print("\nExtracted structure:\n")
+    print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
 if __name__ == "__main__":

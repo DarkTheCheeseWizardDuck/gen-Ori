@@ -127,9 +127,9 @@ Suggested Interpretation
 
 | Score | Interpretation |
 |--------:|----------------|
-| 9-10 | Good |
-| 5–8 | Acceptable |
-| <5 | Needs Improvement |
+| 10 | Good |
+| 8-9 | Acceptable |
+| <8 | Needs Improvement |
 
 ---
 
