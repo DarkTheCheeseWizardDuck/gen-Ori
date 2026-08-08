@@ -1,3 +1,48 @@
+"""
+Tree Adapter
+============
+
+Bridges TAN's structural output to the exact wire format SEARCH-22.5's
+interface/server.py expects at POST /api/query.
+
+INPUT CONTRACT (what this module expects to receive)
+------------------------------------------------------
+A flat list of parts, each already carrying:
+    - part_id   : str, unique
+    - parent_id : str or None (exactly one part has parent_id=None -> the root)
+    - endpoint  : "base" | "tip" | None (None only for the root)
+    - length    : float > 0 (already computed upstream from length_weight
+                  via your external length formula -- NOT predicted by TAN)
+    - side      : optional, "left" | "right" | "center" | None
+                  (purely a layout hint for nicer fan-out; has no effect
+                  on connectivity or on the HKT shape-matching math)
+    - order_index: optional int, used to keep sibling ordering stable
+
+This is TAN's { part_id, parent_id, endpoint } output, merged with the
+external length step -- this module does not compute or predict either.
+
+OUTPUT CONTRACT (verified against interface/server.py::_build_query_graph)
+------------------------------------------------------------------------
+    {
+      "tree": {
+        "nodes": [{"id": int, "x": float, "y": float}, ...],
+        "edges": [{"u": int, "v": int, "length": float}, ...]
+      }
+    }
+
+Notes pulled directly from reading server.py, not assumed:
+    - node "id" must be castable to int -> we mint fresh integer vertex ids.
+    - "x" and "y" are read unconditionally when building edges (even if
+      "length" is also supplied), so real coordinates are REQUIRED, not
+      optional metadata. This module runs a deterministic layout pass to
+      produce them.
+    - the actual shape-matching math (extract_eigenvalues in tree.py) only
+      touches the "weight" edge attribute (1/length), never x/y -- so layout
+      quality does not affect retrieval quality, it only has to be valid.
+    - the server independently checks nx.is_connected() and 400s if not;
+      we replicate that check locally so a bad input fails fast.
+"""
+
 from __future__ import annotations
 
 import math
