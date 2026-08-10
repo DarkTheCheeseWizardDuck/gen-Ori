@@ -9,13 +9,13 @@ from pipeline import run_pipeline
 CURRENT_DIR = Path(__file__).resolve().parent
 ROOT_DIR = CURRENT_DIR.parent
 
-BENCHMARK_DIR = ROOT_DIR / "benchmark" / "intent"
-RESULT_DIR = ROOT_DIR / "results" / "intent"
+BENCHMARK_DIR = ROOT_DIR / "benchmark" / "structure"
+RESULT_DIR = ROOT_DIR / "results" / "structure"
 
 # ==========================================================
 # Discover available benchmark files
 # ==========================================================
-# Automatically scans benchmark/intent/ for every .json file.
+# Automatically scans benchmark/structure/ for every .json file.
 # This means adding/removing/renaming benchmark files requires
 # NO modification to this script.
 benchmark_files = sorted(BENCHMARK_DIR.glob("*.json"))
@@ -80,7 +80,7 @@ print(f"\nRunning benchmark: {benchmark_path.stem}")
 print(f"Total test cases: {len(benchmark)}\n")
 
 # ==========================================================
-# Run every test case through the Intent Model
+# Run every test case through the Extract Structure Model
 # ==========================================================
 results = []
 
