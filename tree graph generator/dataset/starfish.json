@@ -1,0 +1,20 @@
+{
+  "raw_parts": [
+    {"id": "body_1", "name": "body", "length_weight": 0.1, "segment_index": 1, "symmetry": null},
+    {"id": "body_2", "name": "body", "length_weight": 0.1, "segment_index": 2, "symmetry": null},
+    {"id": "leg_1", "name": "leg", "length_weight": 0.25, "segment_index": null, "symmetry": {"group": "leg", "side": "left", "order_index": 1}},
+    {"id": "leg_2", "name": "leg", "length_weight": 0.25, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 1}},
+    {"id": "leg_3", "name": "leg", "length_weight": 0.25, "segment_index": null, "symmetry": {"group": "leg", "side": "center", "order_index": 1}},
+    {"id": "leg_4", "name": "leg", "length_weight": 0.25, "segment_index": null, "symmetry": {"group": "leg", "side": "left", "order_index": 2}},
+    {"id": "leg_5", "name": "leg", "length_weight": 0.25, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 2}}
+  ],
+  "ground_truth": [
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
+    {"part_id": "body_2", "parent_id": "body_1", "endpoint": "tip"},
+    {"part_id": "leg_1", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "leg_2", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "leg_3", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "leg_4", "parent_id": "body_2", "endpoint": "tip"},
+    {"part_id": "leg_5", "parent_id": "body_2", "endpoint": "tip"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "raw_parts": [
+    {"id": "head", "name": "head", "length_weight": 0.15, "segment_index": null, "symmetry": null},
+    {"id": "body_1", "name": "body", "length_weight": 0.25, "segment_index": 1, "symmetry": null},
+    {"id": "body_2", "name": "body", "length_weight": 0.25, "segment_index": 2, "symmetry": null},
+    {"id": "wing_1_L", "name": "wing", "length_weight": 0.3, "segment_index": null, "symmetry": {"group": "wing", "side": "left", "order_index": 1}},
+    {"id": "wing_1_R", "name": "wing", "length_weight": 0.3, "segment_index": null, "symmetry": {"group": "wing", "side": "right", "order_index": 1}},
+    {"id": "tail_1", "name": "tail", "length_weight": 0.25, "segment_index": null, "symmetry": null}
+  ],
+  "ground_truth": [
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
+    {"part_id": "head", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "body_2", "parent_id": "body_1", "endpoint": "tip"},
+    {"part_id": "wing_1_L", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "wing_1_R", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "tail_1", "parent_id": "body_2", "endpoint": "tip"}
+  ]
+}

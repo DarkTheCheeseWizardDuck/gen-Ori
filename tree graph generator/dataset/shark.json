@@ -1,0 +1,16 @@
+{
+  "raw_parts": [
+    {"id": "head", "name": "head", "length_weight": 0.15, "segment_index": null, "symmetry": null},
+    {"id": "body_1", "name": "body", "length_weight": 0.35, "segment_index": 1, "symmetry": null},
+    {"id": "body_2", "name": "body", "length_weight": 0.35, "segment_index": 2, "symmetry": null},
+    {"id": "dorsal_fin", "name": "fin", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "tail", "name": "tail", "length_weight": 0.1, "segment_index": null, "symmetry": null}
+  ],
+  "ground_truth": [
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
+    {"part_id": "head", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "body_2", "parent_id": "body_1", "endpoint": "tip"},
+    {"part_id": "dorsal_fin", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "tail", "parent_id": "body_2", "endpoint": "tip"}
+  ]
+}

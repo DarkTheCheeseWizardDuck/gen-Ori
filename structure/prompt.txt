@@ -51,8 +51,7 @@ Never include:
 - whiskers
 - decorations
 - accessories
-- clothing
-- weapons
+- etc
 
 These details do not contribute significantly to the object's overall stick-figure recognizability.
 
@@ -97,21 +96,16 @@ The generated parts must be representable as a tree graph.
 Rules:
 
 - Each part is represented by exactly one edge.
-- Every edge has one base vertex and one tip vertex.
+- Every edge has 2 vertices.
 - A vertex may belong to multiple parts.
 - Parts may connect only through shared vertices.
 - Every attachment point must correspond to an existing vertex.
-- The graph must contain no cycles.
 
 Body Segmentation
 
-The body's purpose is to provide attachment vertices.
+The body's purpose is to provide attachment vertices. Different objects may call it body, stem, center, cephalothorax, etc., but every main structural segment must be named "body".
 
-Different objects may call it body, stem, trunk, center, cephalothorax, etc., but every main structural segment must be named "body".
-
-Normally, one body segment provides two attachment vertices.
-
-Split the body only when additional attachment vertices are required.
+Normally, one body segment provides two attachment vertices. Split the body only when additional attachment vertices are required.
 
 Create the minimum number of body segments necessary.
 
@@ -139,8 +133,6 @@ Body segments:
 - must all have `"name": "body"`
 - must have increasing `segment_index`
 - must have `symmetry = null`
-
-Before returning the JSON, verify that every generated part can be attached to the tree graph using the available body vertices. If not, split the body into the minimum number of additional segments required.
 
 Example
 

@@ -1,0 +1,18 @@
+{
+  "raw_parts": [
+    {"id": "stem", "name": "stem", "length_weight": null, "segment_index": null, "symmetry": null},
+    {"id": "pedal_1", "name": "pedal", "length_weight": null, "segment_index": null, "symmetry": {"group": "petal", "side": "center", "order_index": 1}},
+    {"id": "pedal_2", "name": "pedal", "length_weight": null, "segment_index": null, "symmetry": {"group": "petal", "side": "center", "order_index": 2}},
+    {"id": "pedal_3", "name": "pedal", "length_weight": null, "segment_index": null, "symmetry": {"group": "petal", "side": "center", "order_index": 3}},
+    {"id": "pedal_4", "name": "pedal", "length_weight": null, "segment_index": null, "symmetry": {"group": "petal", "side": "center", "order_index": 4}},
+    {"id": "pedal_5", "name": "pedal", "length_weight": null, "segment_index": null, "symmetry": {"group": "petal", "side": "center", "order_index": 5}}
+  ],
+  "ground_truth": [
+    {"part_id": "stem", "parent_id": null, "endpoint": null},
+    {"part_id": "pedal_1", "parent_id": "stem", "endpoint": "base"},
+    {"part_id": "pedal_2", "parent_id": "stem", "endpoint": "base"},
+    {"part_id": "pedal_3", "parent_id": "stem", "endpoint": "base"},
+    {"part_id": "pedal_4", "parent_id": "stem", "endpoint": "base"},
+    {"part_id": "pedal_5", "parent_id": "stem", "endpoint": "base"}
+  ]
+}

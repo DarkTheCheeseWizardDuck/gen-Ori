@@ -1,0 +1,16 @@
+{
+  "raw_parts": [
+    {"id": "head", "name": "head", "length_weight": 0.15, "segment_index": null, "symmetry": null},
+    {"id": "body_1", "name": "body", "length_weight": 0.5, "segment_index": 1, "symmetry": null},
+    {"id": "tail", "name": "tail", "length_weight": 0.2, "segment_index": null, "symmetry": null},
+    {"id": "fin_1_L", "name": "fin", "length_weight": 0.07, "segment_index": null, "symmetry": {"group": "fin", "side": "left", "order_index": 1}},
+    {"id": "fin_1_R", "name": "fin", "length_weight": 0.07, "segment_index": null, "symmetry": {"group": "fin", "side": "right", "order_index": 1}}
+  ],
+  "ground_truth": [
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
+    {"part_id": "head", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "fin_1_L", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "fin_1_R", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "tail", "parent_id": "body_1", "endpoint": "tip"}
+  ]
+}

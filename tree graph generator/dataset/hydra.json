@@ -1,0 +1,30 @@
+{
+  "raw_parts": [
+    {"id": "head_1", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_2", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_3", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_4", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_5", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_6", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_7", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_8", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "head_9", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": null},
+    {"id": "body_1", "name": "body", "length_weight": 0.25, "segment_index": 1, "symmetry": null},
+    {"id": "body_2", "name": "body", "length_weight": 0.25, "segment_index": 2, "symmetry": null},
+    {"id": "body_3", "name": "body", "length_weight": 0.25, "segment_index": 3, "symmetry": null}
+  ],
+  "ground_truth": [
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
+    {"part_id": "head_1", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_2", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_3", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_4", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_5", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_6", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_7", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_8", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "head_9", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "body_2", "parent_id": "body_1", "endpoint": "tip"},
+    {"part_id": "body_3", "parent_id": "body_2", "endpoint": "tip"}
+  ]
+}

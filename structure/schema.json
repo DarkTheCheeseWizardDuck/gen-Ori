@@ -8,7 +8,7 @@
     "structure": {
         "parts": {
             "type": "array",
-            "description": "List of structural parts that make up the requested object. Each item represents a unique part instance.",
+            "description": "List of individual physical parts that make up the requested object. Each item represents one actual part, such as one leg, one wing, or one petal.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -35,7 +35,7 @@
                         "properties": {
                             "group": {
                                 "type": "string",
-                                "description": "Identifier shared by mirrored or repeated parts (e.g. 'leg', 'wing', 'antler', 'claw')."
+                                "description": "Identifier shared by mirrored parts belonging to the same repeated group (e.g. all legs share 'leg', all wings share 'wing')."
                             },
                             "side": {
                                 "type": "string",
@@ -44,11 +44,11 @@
                                     "right",
                                     "center"
                                 ],
-                                "description": "Relative position of the part with respect to the object's symmetry axis."
+                                "description": "Relative position of the part. Use 'left' or 'right' for bilateral pairs such as left/right legs or ears. Use 'center' specifically for flower petals, where petals form a radial arrangement rather than left/right pairs."
                             },
                             "order_index": {
                                 "type": "integer",
-                                "description": "Position of this repeated pair/group along the object's main axis (1, 2, 3, ...), used to line up against a body chain's segment_index when there are more than two repeated groups (e.g. leg_1, leg_2, leg_3 on an ant)."
+                                "description": "The repeated position index for this part. This is not the total number of parts. For bilateral limbs, each left/right pair shares one order_index. Example: 3 pairs of legs means 6 individual leg parts with order_index 1, 2, and 3."
                             }
                         }
                     }

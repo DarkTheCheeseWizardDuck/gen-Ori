@@ -1,46 +1,66 @@
 [
     {
-        "id": "E001",
-        "input": "I want an intermediate cat."
+        "id": "E037",
+        "input": "I want a rose."
     },
     {
-        "id": "E002",
-        "input": "I want a rabbit "
+        "id": "E038",
+        "input": "I want a orchid flower."
     },
     {
-        "id": "E003",
-        "input": "dog"
+        "id": "E039",
+        "input": "I want a 5 petals lotus."
     },
     {
-        "id": "E004",
-        "input": "I want a white crane "
+        "id": "E040",
+        "input": "I want a European Dragon."
     },
     {
-        "id": "E005",
-        "input": "give me a lion"
+        "id": "E041",
+        "input": "I want a Chinese Dragon."
     },
     {
-        "id": "E006",
-        "input": "make me sth cute"
+        "id": "E042",
+        "input": "I want a Quetzalcoatl."
     },
     {
-        "id": "E007",
-        "input": "I want a dragonfly."
+        "id": "E043",
+        "input": "I want a Hydra."
     },
     {
-        "id": "E008",
-        "input": "make me a 5 pedals orchid flower"
+        "id": "E044",
+        "input": "I want a hammerhead shark."
     },
     {
-        "id": "E009",
-        "input": "make me a 5 pedals orchid flower with stem and leafs"
+        "id": "E045",
+        "input": "I want a Griffin."
     },
     {
-        "id": "E010",
-        "input": "I want a Eupatorus gracilicornus."
+        "id": "E046",
+        "input": "I want a Unicorn."
     },
-     {
-        "id": "E011",
-        "input": "I want an easy bug "
+    {
+        "id": "E047",
+        "input": "I want an anglerfish."
+    },
+    {
+        "id": "E048",
+        "input": "I want a camel."
+    },
+    {
+        "id": "E049",
+        "input": "I want a starfish."
+    },
+    {
+        "id": "E050",
+        "input": "I want a seagull."
+    },
+    {
+        "id": "E051",
+        "input": "I want a penguin."
+    },
+    {
+        "id": "E052",
+        "input": "I want a turtle."
     }
 ]

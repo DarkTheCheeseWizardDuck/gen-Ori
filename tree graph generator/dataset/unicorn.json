@@ -1,0 +1,20 @@
+{
+  "raw_parts": [
+    {"id": "head", "name": "head", "length_weight": 0.25, "segment_index": null, "symmetry": null},
+    {"id": "body_1", "name": "body", "length_weight": 0.4, "segment_index": 1, "symmetry": null},
+    {"id": "leg_1_L", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "left", "order_index": 1}},
+    {"id": "leg_1_R", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 1}},
+    {"id": "leg_2_L", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "left", "order_index": 2}},
+    {"id": "leg_2_R", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 2}},
+    {"id": "horn", "name": "spike", "length_weight": 0.2, "segment_index": null, "symmetry": null}
+  ],
+  "ground_truth": [
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
+    {"part_id": "head", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "leg_1_L", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "leg_1_R", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "leg_2_L", "parent_id": "body_1", "endpoint": "tip"},
+    {"part_id": "leg_2_R", "parent_id": "body_1", "endpoint": "tip"},
+    {"part_id": "horn", "parent_id": "head", "endpoint": "base"}
+  ]
+}
