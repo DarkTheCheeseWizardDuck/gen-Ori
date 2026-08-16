@@ -12,6 +12,9 @@ Rules
 4. Populate every field defined by the schema unless otherwise specified.
 5. If a value cannot be determined, set it to null.
 6. Ignore descriptive adjectives. Only preserve information that changes the object's structural composition (e.g. number of heads, number of wings, missing tail).
+7. If you are a reasoning model, keep your thinking process extremely brief and concise (less than 100 words), and output the JSON directly.
+8. Set `schema_version` to exactly `"genori.structure.v1"`.
+9. Each left/right symmetry pair with the same group and order index must contain exactly one left part and one right part.
 
 Objective
 
@@ -141,6 +144,7 @@ I want a fish.
 
 Output:
 {
+  "schema_version": "genori.structure.v1",
   "intent": {
     "object": "fish"
   },

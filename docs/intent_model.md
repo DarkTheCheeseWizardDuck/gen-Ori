@@ -8,7 +8,6 @@ The **Intent Understanding Model** is the initial component of the gen-Ori pipel
 
 The primary objective is to convert user requests into a structured, semantic JSON representation. This stage focuses on extracting:
 * The target object name.
-* The requested difficulty level.
 * The primary structural components (e.g., body, limbs, wings) of the object.
 
 This process is designed to run independently of origami mathematics, focusing solely on language parsing and semantic decomposition.
@@ -23,21 +22,20 @@ The model utilizes a basic flow to organize unstructured text input:
 flowchart LR
     Input[User Input\nNatural Language] --> LLM[Language Model\nQwen-32B]
     LLM --> Extraction[Structure Inference\n+ Intent Extraction]
-    Extraction --> JSON[Structured JSON Output\nValidating Schema]
+    Extraction --> JSON[structure.v1 JSON\nPydantic validation]
 ```
 
 ### Process Steps:
-1. **Intent Extraction:** The language model identifies specific attributes of the user's request, such as the object name and target difficulty.
+1. **Intent Extraction:** The language model identifies the requested object.
 2. **Structure Inference:** The model infers the typical physical components associated with the requested object. For example, a request for a "cat" might yield a list of components including a head, body, tail, ears, and legs.
 
 ---
 
 ## 3. Data Representation
 
-The output of the model is structured to follow the schema defined in [intent/schema.json](../intent/schema.json):
+The output follows the Pydantic `StructureV1` contract in [structure/models.py](../structure/models.py), with a committed JSON Schema snapshot at [structure/schema.json](../structure/schema.json):
 1. **`intent`**: Overall request metadata.
    * `object` (string): The target design object.
-   * `difficulty` (integer 1-5): The target difficulty level.
 2. **`structure`**: An array of components (`parts`).
    * `id` (string): A unique identifier (e.g., `front_leg_01`).
    * `name` (string): The semantic name of the part.
@@ -48,8 +46,8 @@ The output of the model is structured to follow the schema defined in [intent/sc
 
 ## 4. Current Implementation
 
-The initial prototype is located in [intent/extractor.py](../intent/extractor.py). It:
-1. Loads the JSON schema from [intent/schema.json](../intent/schema.json) and system instructions from [intent/prompt.txt](../intent/prompt.txt).
-2. Formats the prompt template with the loaded schema.
-3. Queries the **Groq API** (configured to use the Qwen 32B model).
-4. Cleans code fences and parses the response into Python dictionary format.
+The implementation is located in [structure/extractor.py](../structure/extractor.py). It:
+1. Generates the prompt schema from the Pydantic model.
+2. Queries the Groq API.
+3. Cleans code fences and parses the response.
+4. Rejects malformed or semantically invalid documents through `StructureV1` before the result reaches length assignment or TAN.

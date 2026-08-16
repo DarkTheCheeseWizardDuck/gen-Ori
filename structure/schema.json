@@ -1,59 +1,112 @@
 {
-    "intent": {
+  "$defs": {
+    "IntentV1": {
+      "additionalProperties": false,
+      "properties": {
         "object": {
-            "type": "string",
-            "description": "Specific object requested by the user."
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Object",
+          "type": "string"
         }
+      },
+      "required": ["object"],
+      "title": "IntentV1",
+      "type": "object"
     },
-    "structure": {
-        "parts": {
-            "type": "array",
-            "description": "List of individual physical parts that make up the requested object. Each item represents one actual part, such as one leg, one wing, or one petal.",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "Unique identifier for this specific part instance. Distinguishes it from other parts with the same name (e.g. 'leg_1_L' vs 'leg_1_R')."
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "Semantic label for the part (e.g. 'head', 'leg', 'tail', 'wing', 'body', 'fin')."
-                    },
-                    "length_weight": {
-                        "type": "number",
-                        "range": [0, "√2"],
-                        "description": "Normalized stick length of the part. The set of part lengths must describe a stick figure that fits within the unit square bounded by (0,0) and (1,1)."
-                    },
-                    "segment_index": {
-                        "type": ["integer", "null"],
-                        "description": "Position of this part within a chained body sequence (1, 2, 3, ...), used only for objects whose body is split into multiple sticks to provide enough joints for many limb-pairs (e.g. an ant's body_1/body_2). Null for every part that is not a body segment."
-                    },
-                    "symmetry": {
-                        "type": "object",
-                        "description": "Optional metadata describing whether this part belongs to a mirrored or repeated group.",
-                        "properties": {
-                            "group": {
-                                "type": "string",
-                                "description": "Identifier shared by mirrored parts belonging to the same repeated group (e.g. all legs share 'leg', all wings share 'wing')."
-                            },
-                            "side": {
-                                "type": "string",
-                                "enum": [
-                                    "left",
-                                    "right",
-                                    "center"
-                                ],
-                                "description": "Relative position of the part. Use 'left' or 'right' for bilateral pairs such as left/right legs or ears. Use 'center' specifically for flower petals, where petals form a radial arrangement rather than left/right pairs."
-                            },
-                            "order_index": {
-                                "type": "integer",
-                                "description": "The repeated position index for this part. This is not the total number of parts. For bilateral limbs, each left/right pair shares one order_index. Example: 3 pairs of legs means 6 individual leg parts with order_index 1, 2, and 3."
-                            }
-                        }
-                    }
-                }
-            }
+    "PartV1": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "length_weight": {
+          "anyOf": [
+            {"exclusiveMinimum": 0, "maximum": 1.4142135623730951, "type": "number"},
+            {"type": "null"}
+          ],
+          "title": "Length Weight"
+        },
+        "segment_index": {
+          "anyOf": [
+            {"maximum": 3, "minimum": 1, "type": "integer"},
+            {"type": "null"}
+          ],
+          "title": "Segment Index"
+        },
+        "symmetry": {
+          "anyOf": [
+            {"$ref": "#/$defs/SymmetryV1"},
+            {"type": "null"}
+          ]
         }
+      },
+      "required": ["id", "name", "length_weight", "segment_index", "symmetry"],
+      "title": "PartV1",
+      "type": "object"
+    },
+    "StructureBodyV1": {
+      "additionalProperties": false,
+      "properties": {
+        "parts": {
+          "items": {"$ref": "#/$defs/PartV1"},
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Parts",
+          "type": "array"
+        }
+      },
+      "required": ["parts"],
+      "title": "StructureBodyV1",
+      "type": "object"
+    },
+    "SymmetryV1": {
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Group",
+          "type": "string"
+        },
+        "side": {
+          "enum": ["left", "right", "center"],
+          "title": "Side",
+          "type": "string"
+        },
+        "order_index": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Order Index",
+          "type": "integer"
+        }
+      },
+      "required": ["group", "side", "order_index"],
+      "title": "SymmetryV1",
+      "type": "object"
     }
+  },
+  "additionalProperties": false,
+  "description": "The LLM-facing semantic contract. Topology deliberately does not live here.",
+  "properties": {
+    "schema_version": {
+      "const": "genori.structure.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "intent": {"$ref": "#/$defs/IntentV1"},
+    "structure": {"$ref": "#/$defs/StructureBodyV1"}
+  },
+  "required": ["schema_version", "intent", "structure"],
+  "title": "StructureV1",
+  "type": "object"
 }

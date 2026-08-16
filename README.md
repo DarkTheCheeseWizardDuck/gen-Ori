@@ -1,6 +1,6 @@
-# Origami Intent Extractor
+# Genori Structure Extractor
 
-This project parses natural language origami requests into a structured JSON format specifying the target object, difficulty level, and physical parts with symmetry information. It is powered by the Groq API using Qwen models.
+This project parses natural-language origami requests into a validated `genori.structure.v1` document containing the target object, physical parts, symmetry information, and relative stick lengths. It is powered by the Groq API.
 
 ## Setup Instructions
 
@@ -23,10 +23,11 @@ GROQ_MODEL=llama-3.3-70b-versatile
 ### 4. Usage
 Run the extractor script:
 ```bash
-python intent/extractor.py
+python structure/pipeline.py
 ```
 When prompted, type a request like `"an intermediate dragon with two heads"` to receive the structured output.
 
 ### 5. Customization
-* **System Prompt**: Edit [intent/prompt.txt](intent/prompt.txt) to change how the model decomposes objects.
-* **JSON Schema**: Modify [intent/schema.json](intent/schema.json) to add or adjust output fields.
+* **System Prompt**: Edit [structure/prompt.txt](structure/prompt.txt) to change how the model decomposes objects.
+* **Canonical contract**: Edit [structure/models.py](structure/models.py). Pydantic validates every structure response before it continues through the pipeline.
+* **JSON Schema snapshot**: [structure/schema.json](structure/schema.json) is generated from the Pydantic model and is checked for drift by the offline tests.

@@ -1,3 +1,4 @@
 groq
 google-genai
 python-dotenv
+pydantic>=2,<3
