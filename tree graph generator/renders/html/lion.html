@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>lion</title>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; background: #fff; }
+  h1 { font-size: 15px; padding: 12px 16px; margin: 0; color: #1C2541; border-bottom: 1px solid #eee; }
+  #tooltip {
+    position: fixed; display: none; background: #1C2541; color: #fff;
+    padding: 6px 10px; border-radius: 6px; font-size: 12px;
+    pointer-events: none; z-index: 10;
+  }
+  line { cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>lion &mdash; hover an edge to see its name</h1>
+<div id="tooltip"></div>
+<svg width="700" height="305" viewBox="0 0 700 305">
+<g class="edge-group"><line x1="226.5" y1="152.3" x2="508.8" y2="152.3" stroke="#1C2541" stroke-width="2.5"/><line x1="226.5" y1="152.3" x2="508.8" y2="152.3" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="226.5" y1="152.3" x2="199.1" y2="254.5" stroke="#1C2541" stroke-width="2.5"/><line x1="226.5" y1="152.3" x2="199.1" y2="254.5" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="226.5" y1="152.3" x2="50.0" y2="152.3" stroke="#1C2541" stroke-width="2.5"/><line x1="226.5" y1="152.3" x2="50.0" y2="152.3" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="226.5" y1="152.3" x2="199.1" y2="50.0" stroke="#1C2541" stroke-width="2.5"/><line x1="226.5" y1="152.3" x2="199.1" y2="50.0" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="508.8" y1="152.3" x2="536.2" y2="50.0" stroke="#1C2541" stroke-width="2.5"/><line x1="508.8" y1="152.3" x2="536.2" y2="50.0" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="508.8" y1="152.3" x2="650.0" y2="152.3" stroke="#1C2541" stroke-width="2.5"/><line x1="508.8" y1="152.3" x2="650.0" y2="152.3" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'tail')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="508.8" y1="152.3" x2="536.2" y2="254.5" stroke="#1C2541" stroke-width="2.5"/><line x1="508.8" y1="152.3" x2="536.2" y2="254.5" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><circle cx="226.5" cy="152.3" r="5" fill="#E8871E"/><circle cx="508.8" cy="152.3" r="5" fill="#E8871E"/><circle cx="199.1" cy="254.5" r="5" fill="#E8871E"/><circle cx="50.0" cy="152.3" r="5" fill="#E8871E"/><circle cx="199.1" cy="50.0" r="5" fill="#E8871E"/><circle cx="536.2" cy="50.0" r="5" fill="#E8871E"/><circle cx="650.0" cy="152.3" r="5" fill="#E8871E"/><circle cx="536.2" cy="254.5" r="5" fill="#E8871E"/>
+</svg>
+<script>
+function showTip(evt, text) {
+  const t = document.getElementById('tooltip');
+  t.textContent = text;
+  t.style.left = (evt.clientX + 14) + 'px';
+  t.style.top = (evt.clientY + 14) + 'px';
+  t.style.display = 'block';
+}
+function hideTip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+</script>
+</body>
+</html>

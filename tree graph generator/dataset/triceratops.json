@@ -6,9 +6,9 @@
     {"id": "leg_1_R", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 1}},
     {"id": "leg_2_L", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "left", "order_index": 2}},
     {"id": "leg_2_R", "name": "leg", "length_weight": 0.15, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 2}},
-    {"id": "spike_center", "name": "spike", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "spike", "side": "center", "order_index": 1}},
-    {"id": "spike_1_L", "name": "spike", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "spike", "side": "left", "order_index": 2}},
-    {"id": "spike_1_R", "name": "spike", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "spike", "side": "right", "order_index": 2}},
+    {"id": "horn_center", "name": "horn", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "horn", "side": "center", "order_index": 1}},
+    {"id": "horn_1_L", "name": "horn", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "horn", "side": "left", "order_index": 2}},
+    {"id": "horn_1_R", "name": "horn", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "horn", "side": "right", "order_index": 2}},
     {"id": "tail", "name": "tail", "length_weight": 0.2, "segment_index": null, "symmetry": null}
   ],
   "ground_truth": [
@@ -18,9 +18,9 @@
     {"part_id": "leg_1_R", "parent_id": "body_1", "endpoint": "base"},
     {"part_id": "leg_2_L", "parent_id": "body_1", "endpoint": "tip"},
     {"part_id": "leg_2_R", "parent_id": "body_1", "endpoint": "tip"},
-    {"part_id": "spike_center", "parent_id": "head", "endpoint": "base"},
-    {"part_id": "spike_1_L", "parent_id": "body_1", "endpoint": "base"},
-    {"part_id": "spkie_1_R", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "horn_center", "parent_id": "head", "endpoint": "base"},
+    {"part_id": "horn_1_L", "parent_id": "body_1", "endpoint": "base"},
+    {"part_id": "horn_1_R", "parent_id": "body_1", "endpoint": "base"},
     {"part_id": "tail", "parent_id": "body_1", "endpoint": "tip"}
   ]
 }

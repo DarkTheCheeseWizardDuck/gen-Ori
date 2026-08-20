@@ -6,8 +6,8 @@
     {"id": "fin_1_L", "name": "fin", "length_weight": 0.1, "segment_index": null, "symmetry": {"group": "fin", "side": "left", "order_index": 1}},
     {"id": "fin_1_R", "name": "fin", "length_weight": 0.1, "segment_index": null, "symmetry": {"group": "fin", "side": "right", "order_index": 1}},
     {"id": "tail", "name": "tail", "length_weight": 0.2, "segment_index": null, "symmetry": null},
-    {"id": "hammer_L", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "hammer", "side": "left", "order_index": 1}},
-    {"id": "hammer_R", "name": "head", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "hammer", "side": "right", "order_index": 1}}
+    {"id": "hammer_L", "name": "hammer", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "hammer", "side": "left", "order_index": 1}},
+    {"id": "hammer_R", "name": "hammer", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "hammer", "side": "right", "order_index": 1}}
   ],
   "ground_truth": [
     {"part_id": "body_1", "parent_id": null, "endpoint": null},

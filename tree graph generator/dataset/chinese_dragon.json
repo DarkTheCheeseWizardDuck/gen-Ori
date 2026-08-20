@@ -19,6 +19,6 @@
     {"part_id": "leg_1_R", "parent_id": "body_1", "endpoint": "base"},
     {"part_id": "leg_2_L", "parent_id": "body_2", "endpoint": "tip"},
     {"part_id": "leg_2_R", "parent_id": "body_2", "endpoint": "tip"},
-    {"part_id": "body_2", "parent_id": "body_2", "endpoint": "tip"}
+    {"part_id": "tail", "parent_id": "body_2", "endpoint": "tip"}
   ]
 }

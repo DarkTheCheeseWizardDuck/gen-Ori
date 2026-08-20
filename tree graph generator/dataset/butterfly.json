@@ -15,7 +15,7 @@
     {"id": "leg_3_R", "name": "leg", "length_weight": 0.05, "segment_index": null, "symmetry": {"group": "leg", "side": "right", "order_index": 3}}
   ],
   "ground_truth": [
-    {"part_id": "body_2", "parent_id": null, "endpoint": null},
+    {"part_id": "body_1", "parent_id": null, "endpoint": null},
     {"part_id": "head", "parent_id": "body_1", "endpoint": "base"},
     {"part_id": "body_2", "parent_id": "body_1", "endpoint": "tip"},
     {"part_id": "wing_1_L", "parent_id": "body_1", "endpoint": "tip"},

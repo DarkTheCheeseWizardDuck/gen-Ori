@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ant</title>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; background: #fff; }
+  h1 { font-size: 15px; padding: 12px 16px; margin: 0; color: #1C2541; border-bottom: 1px solid #eee; }
+  #tooltip {
+    position: fixed; display: none; background: #1C2541; color: #fff;
+    padding: 6px 10px; border-radius: 6px; font-size: 12px;
+    pointer-events: none; z-index: 10;
+  }
+  line { cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>ant &mdash; hover an edge to see its name</h1>
+<div id="tooltip"></div>
+<svg width="700" height="302" viewBox="0 0 700 302">
+<g class="edge-group"><line x1="180.4" y1="150.8" x2="337.0" y2="150.8" stroke="#1C2541" stroke-width="2.5"/><line x1="180.4" y1="150.8" x2="337.0" y2="150.8" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="180.4" y1="150.8" x2="160.2" y2="226.4" stroke="#1C2541" stroke-width="2.5"/><line x1="180.4" y1="150.8" x2="160.2" y2="226.4" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="180.4" y1="150.8" x2="50.0" y2="150.8" stroke="#1C2541" stroke-width="2.5"/><line x1="180.4" y1="150.8" x2="50.0" y2="150.8" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="180.4" y1="150.8" x2="207.4" y2="50.0" stroke="#1C2541" stroke-width="2.5"/><line x1="180.4" y1="150.8" x2="207.4" y2="50.0" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'antenna')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="180.4" y1="150.8" x2="207.4" y2="251.6" stroke="#1C2541" stroke-width="2.5"/><line x1="180.4" y1="150.8" x2="207.4" y2="251.6" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'antenna')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="180.4" y1="150.8" x2="160.2" y2="75.2" stroke="#1C2541" stroke-width="2.5"/><line x1="180.4" y1="150.8" x2="160.2" y2="75.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="337.0" y1="150.8" x2="357.2" y2="75.2" stroke="#1C2541" stroke-width="2.5"/><line x1="337.0" y1="150.8" x2="357.2" y2="75.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="337.0" y1="150.8" x2="493.5" y2="150.8" stroke="#1C2541" stroke-width="2.5"/><line x1="337.0" y1="150.8" x2="493.5" y2="150.8" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="493.5" y1="150.8" x2="513.7" y2="75.2" stroke="#1C2541" stroke-width="2.5"/><line x1="493.5" y1="150.8" x2="513.7" y2="75.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="493.5" y1="150.8" x2="650.0" y2="150.8" stroke="#1C2541" stroke-width="2.5"/><line x1="493.5" y1="150.8" x2="650.0" y2="150.8" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="493.5" y1="150.8" x2="513.7" y2="226.4" stroke="#1C2541" stroke-width="2.5"/><line x1="493.5" y1="150.8" x2="513.7" y2="226.4" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="337.0" y1="150.8" x2="357.2" y2="226.4" stroke="#1C2541" stroke-width="2.5"/><line x1="337.0" y1="150.8" x2="357.2" y2="226.4" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'leg')" onmouseleave="hideTip()"/></g><circle cx="180.4" cy="150.8" r="5" fill="#E8871E"/><circle cx="337.0" cy="150.8" r="5" fill="#E8871E"/><circle cx="160.2" cy="226.4" r="5" fill="#E8871E"/><circle cx="50.0" cy="150.8" r="5" fill="#E8871E"/><circle cx="207.4" cy="50.0" r="5" fill="#E8871E"/><circle cx="207.4" cy="251.6" r="5" fill="#E8871E"/><circle cx="160.2" cy="75.2" r="5" fill="#E8871E"/><circle cx="357.2" cy="75.2" r="5" fill="#E8871E"/><circle cx="493.5" cy="150.8" r="5" fill="#E8871E"/><circle cx="513.7" cy="75.2" r="5" fill="#E8871E"/><circle cx="650.0" cy="150.8" r="5" fill="#E8871E"/><circle cx="513.7" cy="226.4" r="5" fill="#E8871E"/><circle cx="357.2" cy="226.4" r="5" fill="#E8871E"/>
+</svg>
+<script>
+function showTip(evt, text) {
+  const t = document.getElementById('tooltip');
+  t.textContent = text;
+  t.style.left = (evt.clientX + 14) + 'px';
+  t.style.top = (evt.clientY + 14) + 'px';
+  t.style.display = 'block';
+}
+function hideTip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+</script>
+</body>
+</html>

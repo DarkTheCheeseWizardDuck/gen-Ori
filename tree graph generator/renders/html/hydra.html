@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>hydra</title>
+<style>
+  body { font-family: -apple-system, sans-serif; margin: 0; background: #fff; }
+  h1 { font-size: 15px; padding: 12px 16px; margin: 0; color: #1C2541; border-bottom: 1px solid #eee; }
+  #tooltip {
+    position: fixed; display: none; background: #1C2541; color: #fff;
+    padding: 6px 10px; border-radius: 6px; font-size: 12px;
+    pointer-events: none; z-index: 10;
+  }
+  line { cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>hydra &mdash; hover an edge to see its name</h1>
+<div id="tooltip"></div>
+<svg width="700" height="172" viewBox="0 0 700 172">
+<g class="edge-group"><line x1="87.5" y1="86.2" x2="275.0" y2="86.2" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="275.0" y2="86.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="77.8" y2="122.4" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="77.8" y2="122.4" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="66.7" y2="117.4" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="66.7" y2="117.4" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="57.7" y2="109.1" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="57.7" y2="109.1" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="52.0" y2="98.3" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="52.0" y2="98.3" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="50.0" y2="86.2" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="50.0" y2="86.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="52.0" y2="74.2" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="52.0" y2="74.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="57.7" y2="63.4" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="57.7" y2="63.4" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="66.7" y2="55.0" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="66.7" y2="55.0" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="87.5" y1="86.2" x2="77.8" y2="50.0" stroke="#1C2541" stroke-width="2.5"/><line x1="87.5" y1="86.2" x2="77.8" y2="50.0" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'head')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="275.0" y1="86.2" x2="462.5" y2="86.2" stroke="#1C2541" stroke-width="2.5"/><line x1="275.0" y1="86.2" x2="462.5" y2="86.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><g class="edge-group"><line x1="462.5" y1="86.2" x2="650.0" y2="86.2" stroke="#1C2541" stroke-width="2.5"/><line x1="462.5" y1="86.2" x2="650.0" y2="86.2" stroke="#1C2541" stroke-width="14" opacity="0" onmouseenter="showTip(event, 'body')" onmouseleave="hideTip()"/></g><circle cx="87.5" cy="86.2" r="5" fill="#E8871E"/><circle cx="275.0" cy="86.2" r="5" fill="#E8871E"/><circle cx="77.8" cy="122.4" r="5" fill="#E8871E"/><circle cx="66.7" cy="117.4" r="5" fill="#E8871E"/><circle cx="57.7" cy="109.1" r="5" fill="#E8871E"/><circle cx="52.0" cy="98.3" r="5" fill="#E8871E"/><circle cx="50.0" cy="86.2" r="5" fill="#E8871E"/><circle cx="52.0" cy="74.2" r="5" fill="#E8871E"/><circle cx="57.7" cy="63.4" r="5" fill="#E8871E"/><circle cx="66.7" cy="55.0" r="5" fill="#E8871E"/><circle cx="77.8" cy="50.0" r="5" fill="#E8871E"/><circle cx="462.5" cy="86.2" r="5" fill="#E8871E"/><circle cx="650.0" cy="86.2" r="5" fill="#E8871E"/>
+</svg>
+<script>
+function showTip(evt, text) {
+  const t = document.getElementById('tooltip');
+  t.textContent = text;
+  t.style.left = (evt.clientX + 14) + 'px';
+  t.style.top = (evt.clientY + 14) + 'px';
+  t.style.display = 'block';
+}
+function hideTip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+</script>
+</body>
+</html>

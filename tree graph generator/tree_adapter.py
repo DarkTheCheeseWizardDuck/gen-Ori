@@ -137,41 +137,30 @@ def _direction(angle_deg: float) -> tuple[float, float]:
 # Step 3: fuse per-part edges into one connected graph + deterministic layout
 # ---------------------------------------------------------------------------
 
-def build_tree_payload(
-    raw_parts: list[dict],
-    root_direction_deg: float = 90.0,
-    fan_spread_deg: float = 150.0,
-) -> dict:
-    """
-    Fuses TAN's (part_id, parent_id, endpoint, length) structure into one
-    connected weighted tree and lays it out in 2D, returning the payload
-    ready to POST as-is to /api/query.
-    """
+def _build(raw_parts: list[dict], root_direction_deg: float, fan_spread_deg: float):
+    """Shared core: returns (nodes, edge_payload, edge_part_ids), all index-aligned."""
     parts = _load_parts(raw_parts)
     root = _find_root(parts)
     children_by_attach = _group_children(parts)
 
     vertex_pos: dict[int, tuple[float, float]] = {}
     edges: list[tuple[int, int, float]] = []
-    node_labels: dict[int, str] = {}   # vertex_id -> part_id, for debugging only
+    edge_part_ids: list[str] = []
     _next_id = [0]
 
-    def new_vertex(pos: tuple[float, float], label: str) -> int:
+    def new_vertex(pos: tuple[float, float]) -> int:
         vid = _next_id[0]
         _next_id[0] += 1
         vertex_pos[vid] = pos
-        node_labels[vid] = label
         return vid
 
     def place(part: Part, base_vertex_id: int, base_pos: tuple[float, float], direction_deg: float) -> None:
         dx, dy = _direction(direction_deg)
         tip_pos = (base_pos[0] + part.length * dx, base_pos[1] + part.length * dy)
-        tip_vertex_id = new_vertex(tip_pos, f"{part.part_id}:tip")
+        tip_vertex_id = new_vertex(tip_pos)
         edges.append((base_vertex_id, tip_vertex_id, part.length))
+        edge_part_ids.append(part.part_id)
 
-        # children attaching at this part's own base vertex fan out "backward"
-        # (away from the direction this part travels); children at the tip
-        # vertex fan out "forward" (continuing away from the incoming edge).
         for endpoint, vid, vpos, arc_center in (
             ("base", base_vertex_id, base_pos, direction_deg + 180.0),
             ("tip", tip_vertex_id, tip_pos, direction_deg),
@@ -183,13 +172,43 @@ def build_tree_payload(
             for child, ang in zip(kids, angles):
                 place(child, vid, vpos, ang)
 
-    root_base_id = new_vertex((0.0, 0.0), f"{root.part_id}:base")
+    root_base_id = new_vertex((0.0, 0.0))
     place(root, root_base_id, (0.0, 0.0), root_direction_deg)
 
     nodes = [{"id": vid, "x": x, "y": y} for vid, (x, y) in vertex_pos.items()]
     edge_payload = [{"u": u, "v": v, "length": length} for u, v, length in edges]
+    return nodes, edge_payload, edge_part_ids
 
+
+def build_tree_payload(
+    raw_parts: list[dict],
+    root_direction_deg: float = 90.0,
+    fan_spread_deg: float = 150.0,
+) -> dict:
+    """
+    Fuses TAN's (part_id, parent_id, endpoint, length) structure into one
+    connected weighted tree and lays it out in 2D, returning the payload
+    ready to POST as-is to /api/query. Unchanged from before -- same
+    signature, same output shape.
+    """
+    nodes, edge_payload, _ = _build(raw_parts, root_direction_deg, fan_spread_deg)
     return {"tree": {"nodes": nodes, "edges": edge_payload}}
+
+
+def build_tree_payload_with_parts(
+    raw_parts: list[dict],
+    root_direction_deg: float = 90.0,
+    fan_spread_deg: float = 150.0,
+) -> tuple[dict, list[str]]:
+    """
+    Same as build_tree_payload, but also returns edge_part_ids: a list
+    aligned with payload["tree"]["edges"], giving the part_id each edge
+    came from. For debug_view.py -- so it can reuse this exact layout
+    (the same one the PNG and the engine payload use) instead of computing
+    its own.
+    """
+    nodes, edge_payload, edge_part_ids = _build(raw_parts, root_direction_deg, fan_spread_deg)
+    return {"tree": {"nodes": nodes, "edges": edge_payload}}, edge_part_ids
 
 
 # ---------------------------------------------------------------------------

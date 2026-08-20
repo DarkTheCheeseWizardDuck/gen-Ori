@@ -9,12 +9,12 @@
     {"id": "tail", "name": "tail", "length_weight": 0.05, "segment_index": null, "symmetry": null}
   ],
   "ground_truth": [
-    {"part_id": "body_1", "parent_id": null, "endpoint": null},
-    {"part_id": "head", "parent_id": "body_1", "endpoint": "base"},
-    {"part_id": "leg_1_L", "parent_id": "body_1", "endpoint": "base"},
-    {"part_id": "leg_1_R", "parent_id": "body_1", "endpoint": "base"},
-    {"part_id": "leg_2_L", "parent_id": "body_1", "endpoint": "tip"},
-    {"part_id": "leg_2_R", "parent_id": "body_1", "endpoint": "tip"},
-    {"part_id": "tail", "parent_id": "body_1", "endpoint": "tip"}
+    {"part_id": "body", "parent_id": null, "endpoint": null},
+    {"part_id": "head", "parent_id": "body", "endpoint": "base"},
+    {"part_id": "leg_1_L", "parent_id": "body", "endpoint": "base"},
+    {"part_id": "leg_1_R", "parent_id": "body", "endpoint": "base"},
+    {"part_id": "leg_2_L", "parent_id": "body", "endpoint": "tip"},
+    {"part_id": "leg_2_R", "parent_id": "body", "endpoint": "tip"},
+    {"part_id": "tail", "parent_id": "body", "endpoint": "tip"}
   ]
 }
