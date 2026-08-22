@@ -17,8 +17,8 @@
     {"part_id": "leg_1_R", "parent_id": "body_1", "endpoint": "base"},
     {"part_id": "leg_2_L", "parent_id": "body_1", "endpoint": "tip"},
     {"part_id": "leg_2_R", "parent_id": "body_1", "endpoint": "tip"},
-    {"part_id": "tusk_1_L", "parent_id": "head", "endpoint": "base"},
-    {"part_id": "tusk_1_R", "parent_id": "head", "endpoint": "base"},
+    {"part_id": "tusk_1_L", "parent_id": "head", "endpoint": "tip"},
+    {"part_id": "tusk_1_R", "parent_id": "head", "endpoint": "tip"},
     {"part_id": "tail_1", "parent_id": "body_1", "endpoint": "tip"}
   ]
 }

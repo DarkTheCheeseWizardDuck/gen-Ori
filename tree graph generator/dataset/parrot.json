@@ -17,6 +17,6 @@
     {"part_id": "tail", "parent_id": "body", "endpoint": "tip"},
     {"part_id": "leg_1_L", "parent_id": "body", "endpoint": "tip"},
     {"part_id": "leg_1_R", "parent_id": "body", "endpoint": "tip"},
-    {"part_id": "beak", "parent_id": "head", "endpoint": "base"}
+    {"part_id": "beak", "parent_id": "head", "endpoint": "tip"}
   ]
 }
