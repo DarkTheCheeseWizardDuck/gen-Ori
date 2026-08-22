@@ -154,23 +154,69 @@ def _build(raw_parts: list[dict], root_direction_deg: float, fan_spread_deg: flo
         vertex_pos[vid] = pos
         return vid
 
+    vertex_out_angles: dict[int, list[float]] = {}
+
+    def record_angle(vid: int, angle_deg: float) -> None:
+        vertex_out_angles.setdefault(vid, []).append(angle_deg % 360)
+
+    def avoid_collision(vid: int, angle_deg: float, tolerance: float = 10.0) -> float:
+        """
+        Nudges angle_deg away from any direction already used at this vertex
+        (by an unrelated group -- e.g. the vertex's own part continuing
+        straight through). 180-degree opposition is fine and expected
+        (that's the normal base/tip relationship); only near-EXACT overlap
+        gets nudged. This is what fixes the case where a grandchild
+        attaching to a base-of-a-base ends up pointing the same direction
+        as its grandparent purely from two 180-degree flips canceling out.
+        """
+        used = vertex_out_angles.get(vid, [])
+        angle_deg = angle_deg % 360
+        attempts = 0
+        while attempts < 3 and any(abs((angle_deg - u + 180) % 360 - 180) < tolerance for u in used):
+            angle_deg = (angle_deg + 90.0) % 360
+            attempts += 1
+        return angle_deg
+
     def place(part: Part, base_vertex_id: int, base_pos: tuple[float, float], direction_deg: float) -> None:
         dx, dy = _direction(direction_deg)
         tip_pos = (base_pos[0] + part.length * dx, base_pos[1] + part.length * dy)
         tip_vertex_id = new_vertex(tip_pos)
         edges.append((base_vertex_id, tip_vertex_id, part.length))
         edge_part_ids.append(part.part_id)
+        record_angle(base_vertex_id, direction_deg)
 
-        for endpoint, vid, vpos, arc_center in (
+        for endpoint, vid, vpos, raw_arc_center in (
             ("base", base_vertex_id, base_pos, direction_deg + 180.0),
             ("tip", tip_vertex_id, tip_pos, direction_deg),
         ):
             kids = children_by_attach.get((part.part_id, endpoint), [])
             if not kids:
                 continue
-            angles = _fan_angles(arc_center, len(kids), fan_spread_deg)
-            for child, ang in zip(kids, angles):
-                place(child, vid, vpos, ang)
+
+            arc_center = avoid_collision(vid, raw_arc_center)
+            unpaired = [c for c in kids if c.side is None]
+
+            if unpaired:
+                # The LONGEST unpaired child is treated as the main-axis
+                # continuation (a body segment, a tail, ...) and goes
+                # straight through with zero deviation. Length, not just
+                # "unpaired," is what actually distinguishes a continuation
+                # from an incidental single decoration (e.g. a spike) sitting
+                # at the same joint -- two unpaired children can occur
+                # together (tail + a center spike), and only one of them is
+                # really the axis.
+                straight = max(unpaired, key=lambda c: c.length)
+                rest = [c for c in kids if c is not straight]
+                place(straight, vid, vpos, arc_center)
+                if rest:
+                    angles = _fan_angles(arc_center, len(rest), fan_spread_deg)
+                    for child, ang in zip(rest, angles):
+                        ang = avoid_collision(vid, ang)
+                        place(child, vid, vpos, ang)
+            else:
+                angles = _fan_angles(arc_center, len(kids), fan_spread_deg)
+                for child, ang in zip(kids, angles):
+                    place(child, vid, vpos, ang)
 
     root_base_id = new_vertex((0.0, 0.0))
     place(root, root_base_id, (0.0, 0.0), root_direction_deg)
