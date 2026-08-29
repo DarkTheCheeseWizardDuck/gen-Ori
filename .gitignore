@@ -1,3 +1,19 @@
 .env
 __pycache__/
 .venv/
+
+# Databases
+*.db
+*.sqlite
+
+# Heavy indices and caches
+*.index
+*.pkl
+
+# Compiled C++ / Python extensions
+*.pyd
+*.so
+*.dll
+
+# Build metadata
+*.egg-info/
