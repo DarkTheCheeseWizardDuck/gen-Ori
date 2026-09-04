@@ -12,8 +12,6 @@ def load_dataset(folder: str = "dataset", warn_on_duplicates: bool = True) -> li
     """
     Reads every *.json file in `folder` and returns a list of
     {"name": <filename stem>, "raw_parts": [...], "ground_truth": [...]}
-    -- exactly the shape tan_toy.py's DATASET already uses, so training
-    code doesn't change at all, just swap the import.
     """
     entries = []
     seen_hashes: dict[str, str] = {}

@@ -1,7 +1,5 @@
 """
-TAN v0.1 -- shared encoder + two heads.
-
-Upgrades over the earlier toy version:
+TAN v0.1 -- shared encoder + two heads:
   - name encoding is pluggable (name_encoder.py), not hardcoded
   - decoding (tan_decode.py) uses Chu-Liu/Edmonds for guaranteed valid trees,
     not independent per-part argmax

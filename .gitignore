@@ -17,3 +17,7 @@ __pycache__/
 
 # Build metadata
 *.egg-info/
+
+# Pycache
+__pycache__/
+*.py[cod]

@@ -35,12 +35,27 @@ HTML_DIR = RENDER_DIR / "html"
 CHECKPOINT_PATH = CURRENT_DIR / "tan_checkpoint.pt"
 
 
-def render_object(model, obj: dict, png_path: Path, html_path: Path) -> tuple[bool, str]:
-    """Renders both the PNG (engine-style layout) and the HTML debug view. Returns (ok, message)."""
+def render_object(
+    model,
+    obj: dict,
+    png_path: Path,
+    html_path: Path,
+    payload: dict | None = None,
+    edge_part_ids: list[str] | None = None,
+) -> tuple[bool, str]:
+    """
+    Renders both the PNG (engine-style layout) and the HTML debug view. Returns (ok, message).
+
+    If `payload`/`edge_part_ids` are already available (a caller that ran
+    predict() -> merge_tan_output() -> build_tree_payload_with_parts() itself,
+    e.g. to inspect tan_output before rendering), pass them in and this skips
+    redoing that work. Otherwise it computes them here, same as before.
+    """
     try:
-        tan_output = predict(model, obj["raw_parts"])
-        merged = merge_tan_output(tan_output, obj["raw_parts"])
-        payload, edge_part_ids = build_tree_payload_with_parts(merged, root_direction_deg=0.0)
+        if payload is None or edge_part_ids is None:
+            tan_output = predict(model, obj["raw_parts"])
+            merged = merge_tan_output(tan_output, obj["raw_parts"])
+            payload, edge_part_ids = build_tree_payload_with_parts(merged, root_direction_deg=0.0)
         validate_connected(payload)
     except Exception as e:
         return False, f"{type(e).__name__}: {e}"

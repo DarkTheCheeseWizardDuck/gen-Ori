@@ -10,9 +10,6 @@ is the safety net for when the model doesn't perfectly generalize that on
 its own yet.
 """
 
-import sys
-sys.path.insert(0, "/home/claude/search225/SEARCH-22.5")
-
 import torch
 import torch.nn.functional as F
 

@@ -9,7 +9,7 @@ existing raw_parts-only JSON file into a rendered tree.
                                      v
     ...  -> strip_for_tan() -> trained TAN -> Chu-Liu/Edmonds decode
          -> merge_tan_output() [puts length_weight-derived lengths back]
-         -> tree_adapter.build_tree_payload() -> validate_connected()
+         -> tree_adapter.build_tree_payload_with_parts() -> validate_connected()
          -> rendered to renders/from_prompt/<object>.{png,html}
 
 Requires tan_checkpoint.pt to already exist -- run run_pipeline.py at least
@@ -38,7 +38,7 @@ from name_encoder import LearnedNameEncoder
 from run_pipeline import render_object
 from tan_decode import predict
 from length_resolver import merge_tan_output
-from tree_adapter import build_tree_payload, validate_connected
+from tree_adapter import build_tree_payload_with_parts, validate_connected
 from format_upstream import sanitize_filename
 
 CHECKPOINT_PATH = CURRENT_DIR / "tan_checkpoint.pt"
@@ -61,13 +61,16 @@ def run_from_raw_parts(raw_parts: list[dict], object_name: str, model) -> dict:
     print(json.dumps(tan_output, indent=2))
 
     merged = merge_tan_output(tan_output, raw_parts)
-    payload = build_tree_payload(merged, root_direction_deg=0.0)
+    payload, edge_part_ids = build_tree_payload_with_parts(merged, root_direction_deg=0.0)
     validate_connected(payload)
 
     RENDER_DIR.mkdir(parents=True, exist_ok=True)
     png_path = RENDER_DIR / f"{sanitize_filename(object_name)}.png"
     html_path = RENDER_DIR / f"{sanitize_filename(object_name)}.html"
-    ok, msg = render_object(model, {"name": object_name, "raw_parts": raw_parts}, png_path, html_path)
+    ok, msg = render_object(
+        model, {"name": object_name, "raw_parts": raw_parts}, png_path, html_path,
+        payload=payload, edge_part_ids=edge_part_ids,
+    )
     if ok:
         print(f"\nRendered -> {png_path.relative_to(CURRENT_DIR)}, {html_path.relative_to(CURRENT_DIR)}")
     else:
