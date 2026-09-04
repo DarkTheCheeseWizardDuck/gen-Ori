@@ -69,7 +69,7 @@ def point_on_segment_exact(p1: Vertex4D, p2: Vertex4D, pt: Vertex4D) -> bool:
     dx = bx - ax;  dy = by - ay
     ex = px - ax;  ey = py - ay
     cross = dx * ey - dy * ex
-    if not cross == 0:
+    if not cross.sign() == 0:
         return False
 
     dot  = dx * ex + dy * ey
@@ -85,7 +85,7 @@ def _vertex_on_infinite_line(lp1: Vertex4D, lp2: Vertex4D, pt: Vertex4D) -> bool
     ptx,  pty  = vertex4d_to_aplusbsqrt2_xy(pt)
     dx = lp2x - lp1x;  dy = lp2y - lp1y
     ex = ptx  - lp1x;  ey = pty  - lp1y
-    return dx * ey - dy * ex == 0
+    return (dx * ey - dy * ex).sign() == 0
 
 # ---------------------------------------------------------------------------
 # Line x segment intersection — compute point, then verify containment
@@ -136,7 +136,7 @@ def line_segment_intersection_exact(
     rx  = sp1x - lp1x;  ry  = sp1y - lp1y
 
     det = dly * dsx - dlx * dsy
-    if det == 0:
+    if det.sign() == 0:
         return None
 
     t_num = dsx * ry - dsy * rx
@@ -154,12 +154,6 @@ def line_segment_intersection_exact(
 # ---------------------------------------------------------------------------
 
 def split_edge_general(cp, edge_index: int, new_vertex: Vertex4D) -> int:
-    """
-    Split cp.edges[edge_index] at new_vertex.
-    Validates collinearity with point_on_segment_exact (angle-independent).
-    Returns the index of new_vertex in cp.vertices.
-    Does NOT call cp.get_vertex_neighbors().
-    """
     v1i, v2i, ltype = cp.edges[edge_index]
     v1 = cp.vertices[v1i]
     v2 = cp.vertices[v2i]
@@ -172,6 +166,16 @@ def split_edge_general(cp, edge_index: int, new_vertex: Vertex4D) -> int:
             f"split_edge_general: point {new_vertex.to_cartesian()} does not "
             f"lie on edge {v1.to_cartesian()} -> {v2.to_cartesian()}"
         )
+
+    # Check the FULL vertex list, not just this edge's endpoints -- the
+    # new point may coincide with a vertex from an unrelated part of the
+    # crease pattern, and must reuse that index rather than duplicate it.
+    for idx, v in enumerate(cp.vertices):
+        if v == new_vertex:
+            cp.edges.pop(edge_index)
+            cp.edges.append((v1i, idx, ltype))
+            cp.edges.append((idx, v2i, ltype))
+            return idx
 
     cp.vertices.append(new_vertex)
     ni = len(cp.vertices) - 1

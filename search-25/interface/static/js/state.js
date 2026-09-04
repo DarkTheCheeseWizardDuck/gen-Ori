@@ -1,0 +1,20 @@
+export const state = {
+  nodes: {},
+  edges: [],
+  nextNodeId: 0,
+  selectedNode: null,
+  draggingNode: null,
+  zoom: 1,
+  panOffset: { x: 0, y: 0 },
+  isPanning: false,
+  backgroundGesture: null,
+  queryResult: null,
+  isQueryLoading: false,
+  queryNodeCount: 1,
+  currentDetailResult: null,
+  currentDetailIndex: null,
+  detailViewModes: {
+    left: "cp",
+    right: "tree",
+  },
+};

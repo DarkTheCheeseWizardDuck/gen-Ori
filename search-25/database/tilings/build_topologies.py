@@ -367,8 +367,8 @@ if __name__ == "__main__":
     
 
     # --- CONFIGURATION ---
-    N = 4
-    symmetry = "book"
+    N = 3
+    symmetry = "none"
     prefix_length = 26
 
     print(f"Configuration: N={N}, Symmetry={symmetry}")

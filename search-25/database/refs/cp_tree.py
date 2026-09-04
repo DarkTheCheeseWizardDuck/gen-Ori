@@ -319,6 +319,8 @@ def generate_vertex_pair_children(cp, new_vertex_indices):
     children = []
     for i,j in itertools.combinations(range(n), 2):
         v1,v2 = cp.vertices[i],cp.vertices[j]
+        if v1 == v2:
+            continue # two distinct indices, same actual point -- redundant, not an error
         if has_interior and _is_corner(v1) and _is_corner(v2):
             continue
         # Skip if a direct edge already exists (line is already drawn)
@@ -463,10 +465,10 @@ def _classify_edge_direction(v1: Vertex4D, v2: Vertex4D):
     bx, by = vertex4d_to_aplusbsqrt2_xy(v2)
     dx = bx - ax
     dy = by - ay
-    if dy == 0:              return 'H'   # horizontal
-    if dx == 0:              return 'V'   # vertical
-    if dx - dy == 0:         return 'D+'  # slope +1
-    if dx + dy == 0:         return 'D-'  # slope -1
+    if dy.sign() == 0:              return 'H'   # horizontal
+    if dx.sign() == 0:              return 'V'   # vertical
+    if (dx - dy).sign() == 0:         return 'D+'  # slope +1
+    if (dx + dy).sign() == 0:         return 'D-'  # slope -1
     return None
 
 def _line_key(family: str, v: Vertex4D):

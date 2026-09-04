@@ -1,0 +1,593 @@
+import { state } from './state.js';
+import { makeSvg, computeRadialTreeLayout } from './renderers.js';
+import { setStatus } from './utils.js';
+import { isMobileLayout } from './layout.js';
+import { Locales } from './locales.js';
+import * as Utils from './utils.js'
+
+const editorSvg = document.getElementById("editorSvg");
+const deleteNodeBtn = document.getElementById("deleteNodeBtn");
+const mobileEditorControls = document.getElementById("mobileEditorControls");
+const moveNodeUpBtn = document.getElementById("moveNodeUpBtn");
+const moveNodeDownBtn = document.getElementById("moveNodeDownBtn");
+const moveNodeLeftBtn = document.getElementById("moveNodeLeftBtn");
+const moveNodeRightBtn = document.getElementById("moveNodeRightBtn");
+const PAN_DRAG_THRESHOLD = 4;
+let MIN_ZOOM = 0.35;
+let MAX_ZOOM = 2.8;
+export function setZoomBounds(min, max) {
+  MIN_ZOOM = min;
+  MAX_ZOOM = max;
+}
+const ZOOM_STEP = 1.12;
+
+const activePointers = new Map();
+let activeDragPointerId = null;
+let pinchGesture = null;
+
+function clamp(value, minValue, maxValue) {
+  return Math.min(Math.max(value, minValue), maxValue);
+}
+
+// Replace getWorldPointFromScreen with an SVG-aware version
+function getWorldPointFromSvg(svgX, svgY) {
+  return {
+    x: (svgX - state.panOffset.x) / state.zoom,
+    y: (svgY - state.panOffset.y) / state.zoom,
+  };
+}
+
+function updateTrackedPointer(event) {
+  activePointers.set(event.pointerId, {
+    pointerId: event.pointerId,
+    pointerType: event.pointerType,
+    clientX: event.clientX,
+    clientY: event.clientY,
+  });
+}
+
+function removeTrackedPointer(pointerId) {
+  activePointers.delete(pointerId);
+  if (activeDragPointerId === pointerId) {
+    activeDragPointerId = null;
+  }
+}
+
+function getActiveTouchPointers() {
+  return [...activePointers.values()].filter((pointer) => pointer.pointerType === "touch");
+}
+// Convert touch coordinates to SVG space before calculating the pinch center
+function getPinchCenter(pointerA, pointerB) {
+  const ptA = getSvgPoint(pointerA);
+  const ptB = getSvgPoint(pointerB);
+  return {
+    x: (ptA.x + ptB.x) / 2,
+    y: (ptA.y + ptB.y) / 2,
+  };
+}
+
+// Add a helper to calculate pinch distance in SVG space
+function getPinchDistance(pointerA, pointerB) {
+  const ptA = getSvgPoint(pointerA);
+  const ptB = getSvgPoint(pointerB);
+  return Math.hypot(ptB.x - ptA.x, ptB.y - ptA.y);
+}
+
+function beginPinchGesture() {
+  const touchPointers = getActiveTouchPointers();
+  if (touchPointers.length < 2) return;
+  const [pointerA, pointerB] = touchPointers;
+  const center = getPinchCenter(pointerA, pointerB);
+  pinchGesture = {
+    startDistance: getPinchDistance(pointerA, pointerB),
+    startZoom: state.zoom,
+    anchorWorld: getWorldPointFromSvg(center.x, center.y),
+  };
+  state.backgroundGesture = null;
+  state.draggingNode = null;
+  activeDragPointerId = null;
+  state.isPanning = true;
+  renderEditor();
+}
+
+function updatePinchGesture() {
+  const touchPointers = getActiveTouchPointers();
+  if (!pinchGesture || touchPointers.length < 2) {
+    pinchGesture = null;
+    return;
+  }
+
+  const [pointerA, pointerB] = touchPointers;
+  const center = getPinchCenter(pointerA, pointerB);
+  const currentDistance = getPinchDistance(pointerA, pointerB);
+  const nextZoom = clamp(pinchGesture.startZoom * (currentDistance / pinchGesture.startDistance), MIN_ZOOM, MAX_ZOOM);
+
+  state.zoom = nextZoom;
+  state.panOffset.x = center.x - pinchGesture.anchorWorld.x * state.zoom;
+  state.panOffset.y = center.y - pinchGesture.anchorWorld.y * state.zoom;
+  renderEditor();
+}
+
+function shouldUseDirectDrag() {
+  return !isMobileLayout();
+}
+
+export function getSvgPoint(event) {
+  const point = editorSvg.createSVGPoint();
+  point.x = event.clientX;
+  point.y = event.clientY;
+  const ctm = editorSvg.getScreenCTM();
+  return ctm ? point.matrixTransform(ctm.inverse()) : { x: 0, y: 0 };
+}
+
+export function getClosestNode(x, y, hitRadius = 18) {
+  let closest = null;
+  let minDistance = Infinity;
+  for (const node of Object.values(state.nodes)) {
+    const distance = Math.hypot(node.x - x, node.y - y);
+    if (distance < hitRadius && distance < minDistance) {
+      minDistance = distance;
+      closest = node;
+    }
+  }
+  return closest;
+}
+export function onEditorMouseDown(event) {
+  if (event.pointerType === "mouse" && event.button !== 0) return;
+  updateTrackedPointer(event);
+  if (editorSvg && editorSvg.setPointerCapture) {
+    try { editorSvg.setPointerCapture(event.pointerId); } catch {}
+  }
+  const { x, y } = getSvgPoint(event);
+  const { x: worldX, y: worldY } = getWorldPointFromSvg(x, y);
+  const hit = getClosestNode(worldX, worldY, 18 / state.zoom);
+  
+  if (hit) {
+    History.saveState();
+    state.selectedNode = hit.id;
+    state.backgroundGesture = null;
+    state.isPanning = false;
+    
+    // Unconditionally allow dragging for both mouse AND touch
+    state.draggingNode = hit.id;
+    activeDragPointerId = event.pointerId;
+    
+    renderEditor();
+    return; // Don't trigger pinch gestures if we are dragging a node
+  }
+
+  state.backgroundGesture = {
+    startClientX: event.clientX, // Kept for threshold checking
+    startClientY: event.clientY,
+    startSvgX: x,                // New: SVG-specific start coordinates
+    startSvgY: y,
+    startPanX: state.panOffset.x,
+    startPanY: state.panOffset.y,
+    worldX,
+    worldY,
+  };
+  state.isPanning = false;
+
+  if (state.selectedNode !== null) {
+    event.preventDefault();
+  }
+
+  if (event.pointerType === "touch") {
+    beginPinchGesture();
+  }
+}
+
+export function onEditorMouseMove(event) {
+  updateTrackedPointer(event);
+
+  if (pinchGesture) {
+    updatePinchGesture();
+    return;
+  }
+
+  if (state.draggingNode !== null) {
+    if (event.pointerId !== activeDragPointerId) return;     
+    const { x, y } = getSvgPoint(event);
+    const { x: worldX, y: worldY } = getWorldPointFromSvg(x, y);
+    state.nodes[state.draggingNode].x = worldX;
+    state.nodes[state.draggingNode].y = worldY;
+    renderEditor();
+    return;
+  }
+
+  if (!state.backgroundGesture) return;
+
+  // Threshold check remains in screen pixels for consistent feel across zoom levels
+  const dxClient = event.clientX - state.backgroundGesture.startClientX;
+  const dyClient = event.clientY - state.backgroundGesture.startClientY;
+  const movedEnough = Math.hypot(dxClient, dyClient) >= PAN_DRAG_THRESHOLD;
+  if (!state.isPanning && !movedEnough) return;
+
+  // Actual pan offset must be applied using SVG coordinates
+  const { x, y } = getSvgPoint(event);
+  const dxSvg = x - state.backgroundGesture.startSvgX;
+  const dySvg = y - state.backgroundGesture.startSvgY;
+
+  state.isPanning = true;
+  state.panOffset.x = state.backgroundGesture.startPanX + dxSvg;
+  state.panOffset.y = state.backgroundGesture.startPanY + dySvg;
+  renderEditor();
+}
+
+export function onEditorWheel(event) {
+  if (!editorSvg) return;
+  event.preventDefault();
+
+  const { x: svgX, y: svgY } = getSvgPoint(event);
+  const worldPoint = getWorldPointFromSvg(svgX, svgY);
+  const zoomDirection = event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
+  const nextZoom = clamp(state.zoom * zoomDirection, MIN_ZOOM, MAX_ZOOM);
+
+  state.zoom = nextZoom;
+  state.panOffset.x = svgX - worldPoint.x * state.zoom;
+  state.panOffset.y = svgY - worldPoint.y * state.zoom;
+  renderEditor();
+}
+
+export function onEditorMouseUp(event) {
+  if (event) {
+    removeTrackedPointer(event.pointerId);
+    if (editorSvg && editorSvg.releasePointerCapture) {
+      try { editorSvg.releasePointerCapture(event.pointerId); } catch {}
+    }
+  }
+
+  if (pinchGesture && getActiveTouchPointers().length < 2) {
+    pinchGesture = null;
+    state.isPanning = false;
+  }
+
+  const shouldCreateNode = state.backgroundGesture && !state.isPanning && state.selectedNode !== null;
+
+  if (state.draggingNode !== null) {
+    setStatus("Ready");
+  }
+  state.draggingNode = null;
+
+  if (shouldCreateNode) {
+    History.saveState();
+    const newNode = { id: state.nextNodeId, x: state.backgroundGesture.worldX, y: state.backgroundGesture.worldY };
+    state.nodes[newNode.id] = newNode;
+    state.edges.push({ u: state.selectedNode, v: newNode.id });
+    state.nextNodeId += 1;
+    renderEditor();
+    setStatus("Ready");
+  } else if (state.isPanning) {
+    setStatus("Ready");
+  }
+
+  state.backgroundGesture = null;
+  state.isPanning = false;
+}
+
+export function makeSvgLocal(tag, attrs = {}) { return makeSvg(tag, attrs); }
+export function renderEditor() {
+  editorSvg.replaceChildren();
+  editorSvg.classList.toggle("is-panning", state.isPanning);
+  editorSvg.classList.toggle("has-dragged-node", state.draggingNode !== null);
+  editorSvg.classList.toggle("has-selection", state.selectedNode !== null);
+  if (mobileEditorControls) {
+    mobileEditorControls.classList.toggle("has-selection", state.selectedNode !== null);
+  }
+  if (deleteNodeBtn) deleteNodeBtn.disabled = state.selectedNode === null;
+  if (moveNodeUpBtn) moveNodeUpBtn.disabled = state.selectedNode === null;
+  if (moveNodeDownBtn) moveNodeDownBtn.disabled = state.selectedNode === null;
+  if (moveNodeLeftBtn) moveNodeLeftBtn.disabled = state.selectedNode === null;
+  if (moveNodeRightBtn) moveNodeRightBtn.disabled = state.selectedNode === null;
+
+  // FIX: Make the background rect span infinitely to support letterboxing/pillarboxing
+  editorSvg.appendChild(makeSvg("rect", { x: -5000, y: -5000, width: 10000, height: 10000, fill: "transparent", class: "editor-background" }));
+
+  const content = makeSvg("g", { transform: `translate(${state.panOffset.x} ${state.panOffset.y}) scale(${state.zoom})` });
+
+  for (const edge of state.edges) {
+    const start = state.nodes[edge.u];
+    const end = state.nodes[edge.v];
+    const line = makeSvg("line", { x1: start.x, y1: start.y, x2: end.x, y2: end.y, class: edge.original ? "edge edge-original" : "edge", "vector-effect": "non-scaling-stroke" });
+    // Only edges that came straight from TAN's prediction carry a `name` --
+    // edges the user draws themselves have none, so they get no tooltip.
+    if (edge.original && edge.name) {
+      const title = makeSvg("title", {});
+      title.textContent = edge.name;
+      line.appendChild(title);
+    }
+    content.appendChild(line);
+  }
+
+  for (const node of Object.values(state.nodes)) {
+    content.appendChild(makeSvg("circle", {
+      cx: node.x, cy: node.y, r: (node.id === state.selectedNode? 15:10) / state.zoom,
+      class: node.id === state.selectedNode ? "node selected-node" : "node tree-node",
+      "vector-effect": "non-scaling-stroke",
+    }));
+  }
+
+  editorSvg.appendChild(content);
+}
+
+export function serializeTree() {
+  const nodes = Object.values(state.nodes)
+    .map((n) => ({ id: n.id, x: n.x, y: n.y }))
+    .sort((a, b) => a.id - b.id);
+  const edges = state.edges.map((e) => {
+    const start = state.nodes[e.u];
+    const end = state.nodes[e.v];
+    const length = Math.max(Math.hypot(start.x - end.x, start.y - end.y), 1e-5);
+    const out = { u: e.u, v: e.v, length };
+    if (e.original) out.original = true;
+    if (e.name) out.name = e.name;
+    return out;
+  });
+  return { nodes, edges };
+}
+
+export function resetTree() {
+  state.nodes = {};
+  state.edges = [];
+  state.nextNodeId = 0;
+  state.selectedNode = null;
+  state.draggingNode = null;
+  state.zoom = 1;
+  state.panOffset = { x: 0, y: 0 };
+  state.isPanning = false;
+  state.backgroundGesture = null;
+  renderEditor();
+  setStatus("Tree reset.");
+}
+export function generateRandomTree() {
+  console.log("generating random tree")
+  const targetLeaves = parseInt(document.getElementById("randomNodeCount").value, 10) || 6;
+  if (targetLeaves < 2) return;
+  
+  // Reset Editor State
+  state.nodes = { 0: { id: 0 } };
+  state.edges = [];
+  state.nextNodeId = 1;
+  state.selectedNode = null;
+  state.draggingNode = null;
+  state.zoom = 1;
+  state.panOffset = { x: 0, y: 0 };
+  state.isPanning = false;
+  state.backgroundGesture = null;
+
+  function getLeafCount() {
+    if (state.edges.length === 0) return 1;
+    const degrees = {};
+    for (const id of Object.keys(state.nodes)) degrees[id] = 0;
+    for (const edge of state.edges) { degrees[edge.u]++; degrees[edge.v]++; }
+    return Object.values(degrees).filter(deg => deg === 1).length;
+  }
+
+  // 1. Generate Abstract Topology & Random Lengths
+  let attempts = 0;
+  const maxAttempts = 3000;
+  while (getLeafCount() < targetLeaves && attempts < maxAttempts) {
+    attempts++;
+    const existingIds = Object.keys(state.nodes);
+    const parentId = parseInt(existingIds[Math.floor(Math.random() * existingIds.length)], 10);
+    
+    const newNodeId = state.nextNodeId++;
+    state.nodes[newNodeId] = { id: newNodeId };
+    
+    // Assign a random mathematical length (e.g., between 0.5 and 2.5)
+    const length = 0.5 + Math.random() * 2.0; 
+    state.edges.push({ u: parentId, v: newNodeId, length: length });
+  }
+
+  // 2. Simplify Degree-2 Nodes (Merge edges and combine lengths)
+  let changed = true;
+  while (changed) {
+    changed = false;
+    const degrees = {};
+    const edgeMap = {}; 
+    for (const id of Object.keys(state.nodes)) { degrees[id] = 0; edgeMap[id] = []; }
+    for (const edge of state.edges) { 
+      degrees[edge.u]++; degrees[edge.v]++; 
+      edgeMap[edge.u].push(edge); edgeMap[edge.v].push(edge);
+    }
+    
+    for (const idStr of Object.keys(state.nodes)) {
+      const id = parseInt(idStr, 10);
+      if (degrees[id] === 2) {
+        const e1 = edgeMap[id][0];
+        const e2 = edgeMap[id][1];
+        const u = e1.u === id ? e1.v : e1.u;
+        const v = e2.u === id ? e2.v : e2.u;
+        
+        const combinedLength = (e1.length || 1) + (e2.length || 1);
+        
+        delete state.nodes[id];
+        state.edges = state.edges.filter(e => e !== e1 && e !== e2);
+        state.edges.push({ u: u, v: v, length: combinedLength });
+        changed = true;
+        break;
+      }
+    }
+  }
+
+  // 3. Apply the non-crossing Radial Tree Layout
+  const graphToLayout = { 
+    nodes: Object.values(state.nodes), 
+    edges: state.edges 
+  };
+  computeRadialTreeLayout(graphToLayout);
+
+  // 4. Scale and Center to Editor View
+  const margin = 40;
+  const width = 800;
+  const height = 560;
+  
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const n of graphToLayout.nodes) {
+    if (!n.pos) n.pos = [0, 0]; // Fallback
+    if (n.pos[0] < minX) minX = n.pos[0];
+    if (n.pos[0] > maxX) maxX = n.pos[0];
+    if (n.pos[1] < minY) minY = n.pos[1];
+    if (n.pos[1] > maxY) maxY = n.pos[1];
+  }
+
+  // Calculate the scale needed to fit the bounding box inside the canvas margins
+  const graphWidth = Math.max(maxX - minX, 1);
+  const graphHeight = Math.max(maxY - minY, 1);
+  const scale = Math.min((width - 2 * margin) / graphWidth, (height - 2 * margin) / graphHeight);
+  
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+
+  // Apply scaling and translating to state.nodes
+  for (const n of graphToLayout.nodes) {
+    state.nodes[n.id].x = (width / 2) + (n.pos[0] - cx) * scale;
+    state.nodes[n.id].y = (height / 2) + (n.pos[1] - cy) * scale;
+    // We map .pos back to standard .x and .y for the editor
+    delete state.nodes[n.id].pos; 
+  }
+
+  // 5. Finalize and Render
+  const remainingIds = Object.keys(state.nodes);
+  state.selectedNode = remainingIds.length > 0 ? parseInt(remainingIds[0], 10) : null;
+  
+  renderEditor();
+  
+  const finalLeaves = getLeafCount();
+  const lang = localStorage.getItem('explori_lang') || 'en';
+  const dict = Locales[lang] || Locales['en'];
+  
+  if (finalLeaves < targetLeaves) {
+    Utils.setStatus(`Stopped at ${finalLeaves} leaf nodes (canvas got too crowded).`);
+  } else {
+    Utils.setStatus(`${dict.treeGen1}${finalLeaves}${dict.treeGen2}`);
+  }
+}
+
+// --- Undo / Redo Logic ---
+export const History = {
+  undoStack: [],
+  redoStack: [],
+  saveState: () => {
+    History.undoStack.push(JSON.stringify(serializeTree()));
+    if (History.undoStack.length > 50) History.undoStack.shift(); // Keep memory light
+    History.redoStack = []; // Clear redo future on new action
+  },
+  undo: () => {
+    if (History.undoStack.length === 0) return;
+    History.redoStack.push(JSON.stringify(serializeTree()));
+    loadTreeState(History.undoStack.pop(), true);
+  },
+  redo: () => {
+    if (History.redoStack.length === 0) return;
+    History.undoStack.push(JSON.stringify(serializeTree()));
+    loadTreeState(History.redoStack.pop(), true);
+  }
+};
+
+export function downloadTree() {
+  const treeData = serializeTree();
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(treeData, null, 2));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "explori_tree.json");
+  document.body.appendChild(downloadAnchorNode); // Required for Firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+  setStatus("Tree downloaded successfully.");
+}
+
+export function loadTreeState(jsonString, isHistoryAction = false) {
+  try {
+    if(!isHistoryAction) History.saveState();
+    const parsed = JSON.parse(jsonString);
+    if (!parsed.nodes || !parsed.edges) throw new Error("Invalid tree format.");
+
+    state.nodes = {};
+    let maxId = 0;
+    parsed.nodes.forEach(n => {
+      state.nodes[n.id] = { id: n.id, x: n.x, y: n.y };
+      if (n.id > maxId) maxId = n.id;
+    });
+    
+    state.edges = parsed.edges.map(e => ({ u: e.u, v: e.v, length: e.length || 1, original: !!e.original, name: e.name || null }));
+    state.nextNodeId = maxId + 1;
+    
+    // Reset view state
+    state.selectedNode = null;
+    state.draggingNode = null;
+    state.zoom = 1;
+    state.panOffset = { x: 0, y: 0 };
+    state.isPanning = false;
+    state.backgroundGesture = null;
+
+    renderEditor();
+    setStatus("Tree loaded successfully.");
+  } catch (err) {
+    setStatus("Failed to load tree: " + err.message, true);
+  }
+}
+
+export function loadTreeFromResult(tree) {
+  History.saveState(); // Save current tree to undo history before overwriting
+
+  const newNodes = {};
+  const newEdges = [];
+
+  // Handle both {u, v} and [u, v] / {source, target} edge formats safely
+  const rawEdges = tree.edges || tree;
+  if (!Array.isArray(rawEdges)) {
+    setStatus("Error: Invalid tree topology format.", true);
+    return;
+  }
+
+  rawEdges.forEach(e => {
+    let u, v, length = 1;
+    if (Array.isArray(e)) { u = e[0]; v = e[1]; }
+    else { u = e.u ?? e.source; v = e.v ?? e.target; length = e.length || 1; }
+
+    const idU = parseInt(u, 10);
+    const idV = parseInt(v, 10);
+
+    if (!newNodes[idU]) newNodes[idU] = { id: idU };
+    if (!newNodes[idV]) newNodes[idV] = { id: idV };
+    newEdges.push({ u: idU, v: idV, length });
+  });
+
+  const graphToLayout = {
+    nodes: Object.values(newNodes),
+    edges: newEdges
+  };
+
+  // Run the physics/radial layout algorithm
+  computeRadialTreeLayout(graphToLayout);
+
+  // Scale and center the generated layout into the 800x560 canvas
+  const margin = 40, width = 800, height = 560;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const n of graphToLayout.nodes) {
+    if (!n.pos) n.pos = [0, 0];
+    if (n.pos[0] < minX) minX = n.pos[0];
+    if (n.pos[0] > maxX) maxX = n.pos[0];
+    if (n.pos[1] < minY) minY = n.pos[1];
+    if (n.pos[1] > maxY) maxY = n.pos[1];
+  }
+
+  const graphWidth = Math.max(maxX - minX, 1);
+  const graphHeight = Math.max(maxY - minY, 1);
+  const scale = Math.min((width - 2 * margin) / graphWidth, (height - 2 * margin) / graphHeight);
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+
+  // Apply final physical coordinates
+  for (const n of graphToLayout.nodes) {
+    n.x = (width / 2) + (n.pos[0] - cx) * scale;
+    n.y = (height / 2) + (-n.pos[1] + cy) * scale;
+    delete n.pos;
+  }
+
+  // Load it up as if the user uploaded a JSON file
+  const finalJson = JSON.stringify({ nodes: graphToLayout.nodes, edges: newEdges });
+  loadTreeState(finalJson, true); // true = bypasses the redundant history save inside loadTreeState
+  setStatus("Loaded neighbor tree into editor.");
+}

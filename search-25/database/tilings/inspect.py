@@ -6,6 +6,7 @@ import networkx as nx
 import random
 import faiss
 import matplotlib.pyplot as plt
+from src.engine.math225_core import Vertex4D
 from matplotlib.patches import Polygon
 
 from sqlalchemy import create_engine, Column, Integer, LargeBinary, ForeignKey

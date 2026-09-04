@@ -68,7 +68,7 @@ class Cp225:
             angle = vertices[v1_idx].angle_to(vertices[v2_idx])
 
             neighbors[v1_idx].append((v2_idx, angle, line_type))
-            neighbors[v2_idx].append((v1_idx, (angle + 8) % 16, line_type))
+            neighbors[v2_idx].append((v1_idx, (angle + 8) % 16 if angle is not None else None, line_type))
 
         # Cache the result
         self._neighbors_cache = neighbors

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>gen-Ori</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div id="appRoot" class="app-root">
+
+    <!-- ===================== LEFT PANEL ===================== -->
+    <section class="left-panel">
+
+      <div class="canvas-area">
+        <!-- Project title: plain text, no box, only visible on the blank canvas -->
+        <div id="projectTitle" class="project-title">Gen - Ori</div>
+
+        <!-- Tree box: only appears once TAN returns a tree. All editing
+             happens inside this box; the canvas-area itself is just background. -->
+        <div id="treeBox" class="floating-box tree-box">
+          <svg id="editorSvg" class="editor-svg"></svg>
+        </div>
+
+        <!-- Edit box: top-left, floating, pops in after a tree exists -->
+        <div id="editBox" class="floating-box edit-box">
+          <button id="undoBtn" class="icon-btn" title="Undo"><img src="/static/assets/undo.svg" alt="" /></button>
+          <button id="redoBtn" class="icon-btn flip-h" title="Redo"><img src="/static/assets/undo.svg" alt="" /></button>
+          <button id="deleteNodeBtn" class="icon-btn" title="Delete selected node"><img src="/static/assets/trash.svg" alt="" /></button>
+          <button id="downloadTreeBtn" class="icon-btn" title="Download tree"><img src="/static/assets/download.svg" alt="" /></button>
+          <button id="uploadTreeBtn" class="icon-btn" title="Upload tree"><img src="/static/assets/open.svg" alt="" /></button>
+          <input id="uploadTreeInput" type="file" accept="application/json" hidden />
+        </div>
+
+        <!-- Settings box: bottom-left, floating, pops in alongside edit box -->
+        <div id="settingsBox" class="floating-box settings-box">
+          <div class="settings-row">
+            <span class="settings-label">Symmetry</span>
+            <label class="chip"><input type="checkbox" id="symDiag" checked />diag</label>
+            <label class="chip"><input type="checkbox" id="symBook" />book</label>
+            <label class="chip"><input type="checkbox" id="symNone" />asymmetric</label>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Search size</span>
+            <input type="number" id="searchSize" value="5" min="1" max="25" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing bar -->
+      <div class="typing-bar">
+        <div id="requestPill" class="request-pill hidden"></div>
+        <button id="uploadInitialBtn" class="icon-btn typing-bar-upload-btn" title="Upload a tree instead">
+          <img src="/static/assets/open.svg" alt="" />
+        </button>
+        <input id="uploadInitialInput" type="file" accept="application/json" hidden />
+        <textarea id="promptInput" class="prompt-input" placeholder="Describe what you want to fold..." rows="1"></textarea>
+        <button id="actionBtn" class="action-btn">Generate</button>
+        <div class="new-request-wrap">
+          <button id="newRequestBtn" class="new-request-btn" title="Make new request">+</button>
+          <span class="new-request-label">Make new request</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===================== RIGHT PANEL ===================== -->
+    <section class="right-panel">
+      <div id="resultsGrid" class="results-grid"></div>
+
+      <!-- Floating thumb-mode toggle -- top-right, matches search-22.5's
+           icon-group pattern. No spanning header bar. -->
+      <div class="floating-box thumb-mode-box visible">
+        <input type="hidden" id="resultsThumbMode" value="cp" />
+        <div class="thumb-mode-group" role="group" aria-label="Thumbnail display mode">
+          <button type="button" class="thumb-mode-btn active" data-mode="cp" title="Crease pattern">
+            <img src="/static/assets/crease_pattern.svg" alt="" />
+          </button>
+          <button type="button" class="thumb-mode-btn" data-mode="tree" title="Tree">
+            <img src="/static/assets/tree.svg" alt="" />
+          </button>
+          <button type="button" class="thumb-mode-btn" data-mode="packing" title="Packing">
+            <img src="/static/assets/packing.svg" alt="" />
+          </button>
+        </div>
+        <span id="resultSummary" class="result-summary">No results yet.</span>
+      </div>
+    </section>
+
+    <!-- Detail modal (opened from a result thumbnail) -->
+    <div id="detailModal" class="detail-modal hidden" aria-hidden="true">
+      <div class="detail-modal-inner">
+        <div class="detail-modal-header">
+          <h3 id="modalTitle">Result detail</h3>
+          <button id="detailCloseBtn" class="icon-btn" title="Close">&times;</button>
+        </div>
+        <div id="modalMeta" class="modal-meta"></div>
+        <div id="modalGrid" class="modal-grid"></div>
+        <div class="detail-modal-nav">
+          <button id="detailPrevBtn" class="icon-btn">&larr;</button>
+          <button id="detailNextBtn" class="icon-btn">&rarr;</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>
