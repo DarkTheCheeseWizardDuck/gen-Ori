@@ -460,8 +460,8 @@ html, body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
-  max-width: 1100px;
-  width: 90%;
+  max-width: 1400px;
+  width: 94%;
   max-height: 85vh;
   overflow-y: auto;
 }
@@ -530,6 +530,24 @@ html, body {
   font-size: 13px;
   padding: 20px;
 }
+.refs-legend {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.refs-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.refs-legend-item svg { flex: 0 0 auto; }
+
 .ref-step-container { color: var(--text-dim); }
 
 .detail-modal-nav {

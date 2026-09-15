@@ -210,6 +210,99 @@ def get_ancestry_chain(conn, node_id):
     chain.reverse()
     return chain
 
+_UNIT_SQUARE_CORNERS = [
+    Vertex4D(Fraction(0), Fraction(0), Fraction(0), Fraction(0)),  # BL
+    Vertex4D(Fraction(1), Fraction(0), Fraction(0), Fraction(0)),  # BR
+    Vertex4D(Fraction(1), Fraction(0), Fraction(1), Fraction(0)),  # TR
+    Vertex4D(Fraction(0), Fraction(0), Fraction(1), Fraction(0)),  # TL
+]
+
+
+def _get_ancestry_for_vertex(conn: sqlite3.Connection, v: Vertex4D) -> list[dict]:
+    """Finds the shallowest node matching v directly (v already in
+    STORED/untransformed coordinates) and returns its raw ancestry chain,
+    or [] if no match exists."""
+    from database.refs.cp_tree import v4d_to_z2
+    px, qx, dx, py, qy, dy = v4d_to_z2(v)
+    row = conn.execute(
+        "SELECT node_id FROM vertex_index WHERE px=? AND qx=? AND dx=? "
+        "AND py=? AND qy=? AND dy=? ORDER BY depth ASC, node_id ASC LIMIT 1",
+        (px, qx, dx, py, qy, dy),
+    ).fetchone()
+    if row is None:
+        return []
+    return _get_ancestry(conn, row[0])
+
+
+def _expand_ancestry_with_anchors(
+    ancestry: list[dict],
+    conn: sqlite3.Connection,
+    expanded: Optional[list[dict]] = None,
+    established: Optional[list[Vertex4D]] = None,
+    _depth: int = 0,
+) -> list[dict]:
+    """
+    Walks `ancestry` in order, appending into a SINGLE shared `expanded` list
+    (also used across recursive calls), so duplicate detection compares
+    against every step emitted so far -- whether from the outer chain or any
+    recursively-spliced sub-chain -- rather than separate lists that can't
+    see each other's content.
+
+    For each step, checks whether every vertex-type reference is already
+    anchored (coincides with an endpoint of a crease -- or corner -- already
+    established earlier). If not, recursively looks up that reference
+    vertex's own construction and splices those steps in first. If that
+    sub-construction turns out to be identical to something already shown
+    (common when the reference point has no genuinely independent path --
+    e.g. it's a fixed ratio along an already-drawn line), it's silently
+    skipped instead of shown as a confusing duplicate.
+    """
+    if expanded is None:
+        expanded = []
+    if established is None:
+        established = list(_UNIT_SQUARE_CORNERS)
+    if _depth > 6:
+        return expanded
+
+    def crease_key(v1: Vertex4D, v2: Vertex4D):
+        a, b = tuple(v1.to_cartesian()), tuple(v2.to_cartesian())
+        return frozenset([a, b])
+
+    for step in ancestry:
+        raw_refs = json.loads(step["refs_raw"])
+        step_refs_v4d = []
+
+        for ref in raw_refs:
+            if ref["type"] == "vertex":
+                v = z2_to_v4d(*ref["v"])
+                step_refs_v4d.append({"type": "vertex", "v": v})
+
+                if not any(v == e for e in established):
+                    sub_ancestry = _get_ancestry_for_vertex(conn, v)
+                    if sub_ancestry:
+                        _expand_ancestry_with_anchors(
+                            sub_ancestry, conn, expanded, established, _depth + 1
+                        )
+            else:
+                step_refs_v4d.append({
+                    "type": "crease",
+                    "v1": z2_to_v4d(*ref["v1"]),
+                    "v2": z2_to_v4d(*ref["v2"]),
+                })
+
+        existing_keys = {crease_key(s["new_crease_v1"], s["new_crease_v2"]) for s in expanded}
+        key = crease_key(step["new_crease_v1"], step["new_crease_v2"])
+        if key not in existing_keys:
+            expanded.append({
+                "function_name": step["function_name"],
+                "new_crease_v1": step["new_crease_v1"],
+                "new_crease_v2": step["new_crease_v2"],
+                "refs": step_refs_v4d,
+            })
+        established.append(step["new_crease_v1"])
+        established.append(step["new_crease_v2"])
+
+    return expanded
 # ---------------------------------------------------------------------------
 # Core lookup
 # ---------------------------------------------------------------------------
@@ -302,30 +395,30 @@ def lookup_vertices(
         user_idx, t_name, depth, node_id = row
 
         fwd_fn, inv_fn, stored_v = transform_cache[(user_idx, t_name)]
-        ancestry = _get_ancestry(conn, node_id)
+        raw_ancestry = _get_ancestry(conn, node_id)
+        expanded_ancestry = _expand_ancestry_with_anchors(raw_ancestry, conn)
 
         results_by_vertex[user_idx] = []
-        for step in ancestry:
-            load_refs = json.loads(step["refs_raw"])
+        for step in expanded_ancestry:
             processed_refs = []
-            for ref in load_refs:
+            for ref in step["refs"]:
                 if ref["type"] == "vertex":
                     processed_refs.append({
                         "type": "vertex",
-                        "v": fwd_fn(z2_to_v4d(*ref["v"])).to_cartesian()
+                        "v": fwd_fn(ref["v"]).to_cartesian()
                     })
-                else: # crease
+                else:
                     processed_refs.append({
                         "type": "crease",
-                        "v1": fwd_fn(z2_to_v4d(*ref["v1"])).to_cartesian(),
-                        "v2": fwd_fn(z2_to_v4d(*ref["v2"])).to_cartesian()
+                        "v1": fwd_fn(ref["v1"]).to_cartesian(),
+                        "v2": fwd_fn(ref["v2"]).to_cartesian()
                     })
             results_by_vertex[user_idx].append({
                 "function_name": step["function_name"],
                 "new_crease_v1": fwd_fn(step["new_crease_v1"]).to_cartesian(),
                 "new_crease_v2": fwd_fn(step["new_crease_v2"]).to_cartesian(),
                 "refs": processed_refs
-            })
+            })   
 
     return results_by_vertex
 

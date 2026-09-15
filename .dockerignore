@@ -1,0 +1,37 @@
+# Never send secrets to the Docker daemon
+.env
+
+# Local environments -- rebuilt fresh inside the image
+.venv/
+**/.venv/
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Git internals -- not needed inside the image
+.git/
+.gitignore
+
+# Generated databases/caches -- volume-mounted at runtime instead,
+# no reason to copy them into the build context (some are large)
+search-25/database/tilings/storage/
+search-25/database/tilings/faiss_cache/
+search-25/database/refs/storage/
+
+# Compiled extension artifacts from local builds -- rebuilt fresh in-container
+search-25/src/search22_5.egg-info/
+**/*.so
+**/*.pyd
+
+# Editor/OS cruft
+.DS_Store
+*.egg-info/
+
+# Docs/report assets -- not needed at runtime
+report/
+docs/
+benchmark/
+evaluation/
+results/

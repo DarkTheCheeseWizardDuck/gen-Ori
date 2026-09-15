@@ -1,5 +1,6 @@
 .env
 __pycache__/
+*.py[cod]
 .venv/
 
 # Databases
@@ -18,6 +19,3 @@ __pycache__/
 # Build metadata
 *.egg-info/
 
-# Pycache
-__pycache__/
-*.py[cod]

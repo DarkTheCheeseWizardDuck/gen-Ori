@@ -84,7 +84,6 @@ function buildDetailPane({ side, activeValue, options, renderActive, extraToggle
   if (customBody) {
     body.appendChild(customBody);
   } else {
-    // UPDATE: Change viewBox to a square 400x400
     const svg = makeSvg("svg", { viewBox: "0 0 400 400", class: "detail-svg" });
     renderActive(svg, activeValue);
     body.appendChild(svg);
@@ -259,15 +258,14 @@ export function renderDetail(result, index) {
   if (!result) return;
   const norm = (Math.sqrt(result.heat.query.reduce((sum, val) => sum + val * val, 0)));
   const quality = getMatchQuality(result.distance/norm, state.queryNodeCount);
-  
+
   // Use the universal English key for the CSS styling
-  modalMeta.dataset.quality = quality.key; 
+  modalMeta.dataset.quality = quality.key;
   modalMeta.classList.add("match-quality");
-  
+
   // Use the translated label for the display text
-  // modalMeta.textContent = `${dict.matchQuality}: ${quality.label} • ${dict.distance}: ${(result.distance/norm).toFixed(4)} • ${dict.tilingId}: ${result.N}${symmetry_abbr[result.symmetry]}.${result.tiling_id}`;
   modalMeta.textContent = `${dict.tilingId}: ${result.N}${symmetry_abbr[result.symmetry]}.${result.tiling_id} • ${dict.matchQuality}: ${quality.label}`;
-  
+
   const showingRefs = state.detailViewModes.right === "refs";
   if (showingRefs) {
     ensureRefsDataLoaded(result);
@@ -315,8 +313,7 @@ export function renderDetail(result, index) {
     })() : null,
     renderActive: (svg, currentValue) => {
       if (currentValue === "fold" && result.fold) {
-        // Pass 400, 400 so it matches the viewBox square
-        renderFoldSvg(svg, result.fold, 400, 400); 
+        renderFoldSvg(svg, result.fold, 400, 400);
       } else {
         renderGraphSvg(svg, result.tree, { nodeFill: "#8cffc1", width: 400, height: 400 });
       }
@@ -335,14 +332,6 @@ export function renderDetail(result, index) {
   }
 
   updateDetailNavButtons();
-  const viewLink = document.getElementById("viewPatternLink");
-  if (viewLink) {
-    const N = result.N || "4";
-    const sym = result.symmetry || "none";
-    const symChar = sym === "diag" ? "d" : sym === "book" ? "b" : "n";
-    const tilingId = result.tiling_id || "0";
-    viewLink.href = `/view?id=${N}${symChar}${tilingId}`;
-  }
   detailModal.classList.remove("hidden");
   detailModal.setAttribute("aria-hidden", "false");
 }

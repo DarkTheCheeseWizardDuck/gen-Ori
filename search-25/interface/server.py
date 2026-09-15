@@ -1,18 +1,13 @@
 """
 gen-Ori local web interface -- HTTP server wrapper.
 
-STEP 1 of 4 (web server wrapper -> front end -> back end -> docker).
-This file only sets up routing + static file serving + stub endpoints.
-The stub endpoints below return placeholder JSON; real logic (calling
-run_from_text() and query_tilings()) gets wired in during the "back end"
-step, once the front end that consumes them exists.
-
 Routes:
     GET  /                      -> static/index.html
     GET  /styles.css            -> static/styles.css
     GET  /static/<path>         -> anything under static/ (js/, assets/, ...)
-    POST /api/generate          -> [stub] NL prompt -> tree payload
-    POST /api/search            -> [stub] tree payload -> matched crease patterns
+    POST /api/generate          -> NL prompt -> tree payload
+    POST /api/search            -> tree payload -> matched crease patterns
+    POST /api/fetch_refs        -> tiling_id/N/symmetry -> fold-guide references
 
 No Google Sheets logging, no interface token/auth, no /about or /view pages --
 intentionally left out, not part of what was asked for. This is meant to run
@@ -254,11 +249,8 @@ class InterfaceHandler(BaseHTTPRequestHandler):
         try:
             upstream_result = run_pipeline(prompt)  # structure/pipeline.py, untouched
             raw_parts = upstream_result["structure"]["parts"]
-            print(f"[generate] upstream returned {len(raw_parts)} raw_parts")
 
             tan_output = predict(_MODEL, raw_parts)
-            print(f"[generate] TAN predicted {len(tan_output)} edges")
-
             merged = merge_tan_output(tan_output, raw_parts)
             tree_payload, edge_part_ids = build_tree_payload_with_parts(merged, root_direction_deg=0.0)
             validate_connected(tree_payload)
@@ -303,7 +295,7 @@ class InterfaceHandler(BaseHTTPRequestHandler):
             bundle = _build_response_bundle(query_graph, results, db_configs)
             _send_json(self, HTTPStatus.OK, bundle)
         except Exception as e:
-            print(f"[search] FAILED:")
+            print("[search] FAILED:")
             traceback.print_exc()
             _send_json(self, HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(e)})
 

@@ -207,6 +207,34 @@ export function renderReferenceWorkspace(ancestryArray, targetXY = null) {
     workspace.style.flexWrap = "wrap";
     workspace.style.gap = "1rem";
 
+    // Legend: explains the visual language once, since past creases / the new
+    // crease / reference lines / reference points otherwise only differ by
+    // subtle color and thickness, which isn't self-explanatory at a glance.
+    const legend = document.createElement("div");
+    legend.className = "refs-legend";
+    const legendItems = [
+        { swatch: "line", color: "var(--cp-h)", width: "1", dashed: false, label: "Existing crease" },
+        { swatch: "line", color: "var(--accent)", width: "4", dashed: false, label: "New crease (this step)" },
+        { swatch: "line", color: "var(--packing-h)", width: "4", dashed: true, label: "Reference line" },
+        { swatch: "circle", color: "var(--accent)", label: "Reference point" },
+    ];
+    for (const item of legendItems) {
+        const entry = document.createElement("span");
+        entry.className = "refs-legend-item";
+        if (item.swatch === "line") {
+            entry.innerHTML =
+                `<svg width="24" height="12" viewBox="0 0 24 12">` +
+                `<line x1="1" y1="6" x2="23" y2="6" stroke="${item.color}" stroke-width="${item.width}" ` +
+                (item.dashed ? `stroke-dasharray="4 3"` : "") + `/></svg> ${item.label}`;
+        } else {
+            entry.innerHTML =
+                `<svg width="14" height="14" viewBox="0 0 14 14">` +
+                `<circle cx="7" cy="7" r="5" fill="none" stroke="${item.color}" stroke-width="2"/></svg> ${item.label}`;
+        }
+        legend.appendChild(entry);
+    }
+    workspace.appendChild(legend);
+
     const steps = processAncestry(ancestryArray);
     
     // Add the final target step so the last crease remains visible behind the dot

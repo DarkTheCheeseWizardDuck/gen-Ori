@@ -1,0 +1,47 @@
+services:
+  # Persistent web service -- runs interface/server.py.
+  app:
+    build: .
+    image: gen-ori:latest
+    container_name: gen-ori-app
+    ports:
+      - "8000:8000"
+    environment:
+      # server.py defaults to 127.0.0.1, which inside a container means
+      # "only reachable from within this container" -- 0.0.0.0 is required
+      # for the port mapping above to actually forward host traffic in.
+      - GENORI_INTERFACE_HOST=0.0.0.0
+    env_file:
+      - .env
+    volumes:
+      # Whole database/ folder mounted from the host: contains both the
+      # tilings/refs Python source AND the generated .db/.index/.pkl data.
+      # Databases are deliberately not baked into the image (see .gitignore
+      # -- they're multi-GB generated artifacts, not code), and mounting the
+      # whole folder means anything built via `builder` below shows up here
+      # immediately without rebuilding the image.
+      - ./search-25/database:/app/gen-Ori/search-25/database
+    restart: unless-stopped
+
+  # On-demand container for the offline build scripts (build_topologies.py,
+  # build_tilings.py, faiss_cache.py, cp_tree.py, etc). Not started by
+  # `docker compose up` (see profiles below) -- run it explicitly, e.g.:
+  #
+  #   docker compose run --rm builder python -m database.tilings.build_topologies
+  #   docker compose run --rm builder python -m database.tilings.build_tilings
+  #   docker compose run --rm builder python -m database.tilings.faiss_cache
+  #   docker compose run --rm builder python -m database.refs.cp_tree 4 database/refs/storage/cp_pruned.db
+  #   docker compose run --rm builder bash        # or just get a shell
+  #
+  # Reuses the exact same image as `app` (no separate build step needed) --
+  # requires `docker compose build app` (or a normal `docker compose up`)
+  # to have run at least once first.
+  builder:
+    image: gen-ori:latest
+    container_name: gen-ori-builder
+    env_file:
+      - .env
+    working_dir: /app/gen-Ori/search-25
+    volumes:
+      - ./search-25/database:/app/gen-Ori/search-25/database
+    profiles: ["tools"]
