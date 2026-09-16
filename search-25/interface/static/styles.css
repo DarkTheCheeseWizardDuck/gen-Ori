@@ -495,7 +495,7 @@ html, body {
 }
 .detail-toggle-option.active { border-color: var(--secondary); color: var(--text); }
 .detail-panel-body { background: var(--bg-panel); border-radius: 8px; }
-.detail-svg { width: 100%; height: auto; }
+.detail-svg { width: 100%; height: auto; max-height: 55vh; }
 
 .detail-download-btn {
   cursor: pointer;
