@@ -10,9 +10,9 @@ from extractor import extract_structure
 from length_assign import assign_length_weights
 
 
-def run_pipeline(user_input: str) -> dict:
-    structure = extract_structure(user_input)
-    structure = assign_length_weights(structure)  # overwrite with the length-filled version
+def run_pipeline(user_input: str, api_key: str | None = None, model: str | None = None) -> dict:
+    structure = extract_structure(user_input, api_key=api_key, model=model)
+    structure = assign_length_weights(structure, api_key=api_key, model=model)  # overwrite with the length-filled version
     return structure
 
 

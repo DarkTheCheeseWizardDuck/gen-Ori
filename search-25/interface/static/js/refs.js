@@ -63,7 +63,10 @@ function normalizeRefs(rawRefs) {
     
     return refs.map(ref => {
         if (ref.type === 'vertex') {
-            return { type: 'vertex', xy: ref.xy || ref.v };
+            return {
+                type: 'vertex', xy: ref.xy || ref.v,
+                originKind: ref.origin_kind, originStep: ref.origin_step,
+            };
         } else if (ref.type === 'crease' || ref.type === 'edge') {
             let xy1 = ref.xy1 || ref.v1;
             let xy2 = ref.xy2 || ref.v2;
@@ -120,13 +123,78 @@ function getInstructionText(fn, refs) {
     const lang = localStorage.getItem('explori_lang') || 'en';
     const dict = Locales[lang] || Locales['en'];
 
+    // When a circled point was created by an earlier step in this same
+    // sequence, name that step instead of leaving the point unexplained.
+    const stepRefText = (ref) => {
+        if (ref && ref.originKind === 'step' && ref.originStep != null) {
+            return String(ref.originStep);
+        }
+        return null;
+    };
+
+    // Phrase for one side of an "intersection of X and Y" description.
+    // originStep here is a single label: 0 = a border edge, N = step N.
+    const lineLabelText = (label) => {
+        if (label === 0) return dict.lineEdge;
+        if (label === -1) return dict.lineDiagonal || dict.lineEdge;
+        return (dict.lineStepTemplate || "step {n}").replace('{n}', label);
+    };
+
+    // When a circled point isn't itself a tracked step, but sits where two
+    // already-drawn lines cross, describe it that way instead of leaving it
+    // unexplained.
+    const intersectionText = (ref, diagTemplate, edgeTemplateKey) => {
+        if (!ref || ref.originKind !== 'intersection' || !Array.isArray(ref.originStep)) {
+            return null;
+        }
+        const [a, b] = ref.originStep;
+        const template = dict[edgeTemplateKey];
+        if (!template) return null;
+        return template.replace('{a}', lineLabelText(a)).replace('{b}', lineLabelText(b));
+    };
+
+    // Describe a single circled point by whatever we know about its origin:
+    // a corner, an earlier step's endpoint, an intersection of two already-
+    // drawn lines, or (last resort) just "the circled point".
+    const describePoint = (ref) => {
+        if (!ref) return dict.linePoint || "the circled point";
+        if (ref.originKind === 'corner') return dict.lineCorner || "the corner";
+        const step = stepRefText(ref);
+        if (step) {
+            return (dict.linePointStepTemplate || "the point from step {n}").replace('{n}', step);
+        }
+        if (ref.originKind === 'intersection' && Array.isArray(ref.originStep)) {
+            const [a, b] = ref.originStep;
+            return (dict.lineIntersectionTemplate || "the intersection of {a} and {b}")
+                .replace('{a}', lineLabelText(a)).replace('{b}', lineLabelText(b));
+        }
+        return dict.linePoint || "the circled point";
+    };
+
     if (!fn || fn === "target") return dict.instrTarget;
-    if (fn === "vertex_pair") return dict.instrVertexPair;
+    if (fn === "vertex_pair") {
+        const vertexRefs = refs.filter(r => r.type === 'vertex');
+        if (vertexRefs.length === 2) {
+            const [a, b] = vertexRefs.map(describePoint);
+            return (dict.instrVertexPairBoth || "Crease through {a} and {b}.")
+                .replace('{a}', a).replace('{b}', b);
+        }
+        return dict.instrVertexPair;
+    }
     if (fn === "parallel_bisector") return dict.instrParallelBisector;
     if (fn === "angle_bisector") return dict.instrAngleBisector;
     
     if (fn === "perp_through_vertex") {
         const hasDiag = refs.some(r => r.type === 'crease');
+        const vertexRef = refs.find(r => r.type === 'vertex');
+        const n = stepRefText(vertexRef);
+        if (n) {
+            const template = hasDiag ? dict.instrPerpDiagStep : dict.instrPerpEdgeStep;
+            if (template) return template.replace('{n}', n);
+        }
+        const intersectKey = hasDiag ? 'instrPerpDiagIntersect' : 'instrPerpEdgeIntersect';
+        const intersectText = intersectionText(vertexRef, null, intersectKey);
+        if (intersectText) return intersectText;
         return hasDiag ? dict.instrPerpDiag : dict.instrPerpEdge;
     }
     

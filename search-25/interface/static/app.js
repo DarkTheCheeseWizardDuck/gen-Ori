@@ -5,6 +5,7 @@ import * as TreeActions from './js/treeActions.js';
 import * as Results from './js/results.js';
 import * as Detail from './js/detail.js';
 import { setStatus } from './js/utils.js';
+import { getApiConfig, invalidateApiConfig } from './js/apiKeyGate.js';
 
 // ---------------------------------------------------------------------------
 // DOM refs
@@ -132,12 +133,35 @@ function loadGeneratedTree(tree) {
 // API calls
 // ---------------------------------------------------------------------------
 async function callGenerate(prompt) {
+  const { apiKey, model } = getApiConfig();
   const res = await fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({ prompt, api_key: apiKey, model }),
   });
-  if (!res.ok) throw new Error(`generate failed: ${res.status}`);
+
+  if (res.status === 400) {
+    // Missing/cleared key -- send the visitor back to the gate.
+    invalidateApiConfig('Please enter your API key to continue.');
+    throw new Error('api key required');
+  }
+
+  if (!res.ok) {
+    let message = `generate failed: ${res.status}`;
+    try {
+      const body = await res.json();
+      if (body.error) message = body.error;
+    } catch { /* ignore, keep default message */ }
+
+    // Groq auth errors surface as a 500 with the underlying message wrapped
+    // in RuntimeError text -- catch those here and reopen the key modal
+    // instead of just showing a generic failure.
+    if (/invalid_api_key|Unauthorized|401|authentication/i.test(message)) {
+      invalidateApiConfig('Your API key was rejected. Please re-enter it.');
+    }
+    throw new Error(message);
+  }
+
   return res.json();
 }
 

@@ -462,8 +462,11 @@ html, body {
   padding: 18px;
   max-width: 1400px;
   width: 94%;
+  height: 85vh;
   max-height: 85vh;
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .detail-modal-header {
@@ -471,19 +474,22 @@ html, body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  flex: 0 0 auto;
 }
 .detail-modal-header h3 { margin: 0; font-size: 16px; }
 
-.modal-meta { font-size: 13px; color: var(--text-dim); margin-bottom: 12px; }
+.modal-meta { font-size: 13px; color: var(--text-dim); margin-bottom: 12px; flex: 0 0 auto; }
 
 .modal-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
-.detail-panel { display: flex; flex-direction: column; gap: 8px; }
-.detail-toggle-group { display: flex; gap: 6px; }
+.detail-panel { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.detail-toggle-group { display: flex; gap: 6px; flex: 0 0 auto; }
 .detail-toggle-option {
   background: var(--bg-panel);
   border: 1px solid var(--border);
@@ -494,8 +500,14 @@ html, body {
   cursor: pointer;
 }
 .detail-toggle-option.active { border-color: var(--secondary); color: var(--text); }
-.detail-panel-body { background: var(--bg-panel); border-radius: 8px; }
-.detail-svg { width: 100%; height: auto; max-height: 55vh; }
+.detail-panel-body {
+  background: var(--bg-panel);
+  border-radius: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+.detail-svg { width: 100%; height: 100%; }
 
 .detail-download-btn {
   cursor: pointer;
@@ -555,4 +567,127 @@ html, body {
   justify-content: center;
   gap: 20px;
   margin-top: 14px;
+  flex: 0 0 auto;
+}
+/* ================= API key gate ================= */
+
+.app-root.app-blurred {
+  filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.2s ease;
+}
+
+.api-key-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(246, 243, 235, 0.35); /* --bg, translucent so the blurred app shows through */
+}
+
+.api-key-overlay.visible {
+  display: flex;
+}
+
+.api-key-box {
+  width: min(420px, 90vw);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  padding: 28px 26px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.api-key-title {
+  margin: 0 0 8px;
+  font-size: 19px;
+  color: var(--text);
+}
+
+.api-key-subtitle {
+  margin: 0 0 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.api-key-field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.api-key-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.api-key-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.api-key-hint {
+  font-size: 11px;
+  color: var(--secondary);
+  margin-bottom: 18px;
+}
+
+.api-key-link {
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.api-key-link:hover {
+  color: var(--accent-bright);
+  text-decoration: underline;
+}
+
+.api-key-enter-btn {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.api-key-enter-btn:hover:not(:disabled) {
+  background: var(--accent-bright);
+}
+
+.api-key-enter-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.api-key-status {
+  min-height: 18px;
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.api-key-status.error {
+  color: var(--danger);
 }

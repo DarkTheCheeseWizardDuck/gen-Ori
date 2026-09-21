@@ -41,4 +41,4 @@ WORKDIR /app/gen-Ori/search-25
 
 EXPOSE 8000
 
-CMD ["python", "-m", "interface.server"]
+CMD ["python", "-u", "-m", "interface.server"]

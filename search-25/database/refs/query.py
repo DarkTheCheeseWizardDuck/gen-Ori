@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Optional
 import json
 from database.refs.cp_tree import decode_refs, z2_to_v4d
+from database.refs.cp_general_crease import _vertex_on_infinite_line
 from src.engine.math225_core import Vertex4D, Fraction, AplusBsqrt2
 from src.engine.cp225 import Cp225, rotate_90, rotate_180, rotate_270, reflect_x_axis
 
@@ -216,6 +217,64 @@ _UNIT_SQUARE_CORNERS = [
     Vertex4D(Fraction(1), Fraction(0), Fraction(1), Fraction(0)),  # TR
     Vertex4D(Fraction(0), Fraction(0), Fraction(1), Fraction(0)),  # TL
 ]
+_BORDER_EDGES = [
+    (_UNIT_SQUARE_CORNERS[0], _UNIT_SQUARE_CORNERS[1]),  # bottom
+    (_UNIT_SQUARE_CORNERS[1], _UNIT_SQUARE_CORNERS[2]),  # right
+    (_UNIT_SQUARE_CORNERS[2], _UNIT_SQUARE_CORNERS[3]),  # top
+    (_UNIT_SQUARE_CORNERS[3], _UNIT_SQUARE_CORNERS[0]),  # left
+]
+_MAIN_DIAGONALS = [
+    (_UNIT_SQUARE_CORNERS[0], _UNIT_SQUARE_CORNERS[2]),  # BL - TR
+    (_UNIT_SQUARE_CORNERS[1], _UNIT_SQUARE_CORNERS[3]),  # BR - TL
+]
+
+
+def _origin_label(v: Vertex4D, expanded: list[dict]):
+    """Identify where a vertex was established, for step-by-step instruction
+    text: a corner of the square, the N-th step already emitted into
+    `expanded` (1-indexed, matching what the user sees -- the frontend
+    skips the synthetic 'root' entry when numbering panels, so we must too),
+    or (None, None) if it can't be tied to a single tracked point.
+    """
+    for c in _UNIT_SQUARE_CORNERS:
+        if v == c:
+            return ("corner", None)
+    numbered = [s for s in expanded if s.get("function_name") != "root"]
+    for i, s in enumerate(numbered):
+        if v == s["new_crease_v1"] or v == s["new_crease_v2"]:
+            return ("step", i + 1)
+    return (None, None)
+
+
+def _intersection_label(v: Vertex4D, expanded: list[dict]):
+    """Fallback for a vertex that is NOT itself a tracked step endpoint or
+    corner, but sits at the crossing of two lines that are already on the
+    page (a crease from an earlier step, or a border edge). This is the
+    common case a plain point-match misses: a new crease can cross several
+    already-drawn creases as it's laid down, creating vertices that were
+    never recorded as anyone's "new_crease_v1/v2" -- but which are still a
+    completely standard, human-identifiable landmark ("where the step-1
+    crease crosses the edge"). Returns a (label_a, label_b) pair of step
+    indices (0 = a border edge, 1-indexed = a step, 'root' excluded to match
+    the frontend's own numbering), or None if v isn't on at least two
+    distinct already-drawn lines.
+    """
+    numbered = [s for s in expanded if s.get("function_name") != "root"]
+    lines = [(0, b[0], b[1]) for b in _BORDER_EDGES]
+    lines += [(-1, d[0], d[1]) for d in _MAIN_DIAGONALS]
+    lines += [(i + 1, s["new_crease_v1"], s["new_crease_v2"]) for i, s in enumerate(numbered)]
+
+    hit_labels = []
+    for label, p1, p2 in lines:
+        if label in hit_labels:
+            continue
+        if _vertex_on_infinite_line(p1, p2, v):
+            hit_labels.append(label)
+        if len(hit_labels) >= 2:
+            break
+    if len(hit_labels) >= 2:
+        return (hit_labels[0], hit_labels[1])
+    return None
 
 
 def _get_ancestry_for_vertex(conn: sqlite3.Connection, v: Vertex4D) -> list[dict]:
@@ -275,14 +334,59 @@ def _expand_ancestry_with_anchors(
         for ref in raw_refs:
             if ref["type"] == "vertex":
                 v = z2_to_v4d(*ref["v"])
-                step_refs_v4d.append({"type": "vertex", "v": v})
 
-                if not any(v == e for e in established):
+                already_established = any(v == e for e in established)
+                sub_ancestry = None
+                if not already_established:
                     sub_ancestry = _get_ancestry_for_vertex(conn, v)
                     if sub_ancestry:
                         _expand_ancestry_with_anchors(
                             sub_ancestry, conn, expanded, established, _depth + 1
                         )
+                    elif _intersection_label(v, expanded) is None:
+                        # This reference vertex is not a corner, not an
+                        # endpoint of any step shown so far, has no indexed
+                        # ancestry of its own to splice in, AND isn't the
+                        # crossing of any two lines already on the page --
+                        # the fold-guide UI is about to show a circled point
+                        # with no way for the user to have identified it.
+                        # Surface it server-side instead of failing silently
+                        # so specific cases can be tracked down.
+                        print(f"[fold-guide] WARNING: unresolved reference "
+                              f"vertex {v!r} in step "
+                              f"function_name={step['function_name']!r} "
+                              f"(node id={step.get('id')}) -- no matching "
+                              f"established point, no indexed ancestry, and "
+                              f"no line intersection found for it.")
+                # Targeted diagnostic: exactly why did/didn't the splice
+                # attempt happen, and what (if anything) did it find.
+                print(f"[fold-guide][splice-debug] v={tuple(float(c) for c in v.to_cartesian())!r} "
+                      f"already_established={already_established} sub_ancestry_len="
+                      f"{len(sub_ancestry) if sub_ancestry else 0} "
+                      f"sub_ancestry_fns="
+                      f"{[s['function_name'] for s in sub_ancestry] if sub_ancestry else None}")
+
+                origin_kind, origin_step = _origin_label(v, expanded)
+                if origin_kind is None:
+                    pair = _intersection_label(v, expanded)
+                    if pair is not None:
+                        origin_kind, origin_step = ("intersection", pair)
+                # Unconditional (not just on failure) so we can see exactly
+                # what every ref resolves to, and how many entries are in
+                # `expanded` at the moment of resolution -- this is the
+                # ground truth needed to debug mismatches between this
+                # numbering and what the frontend actually displays.
+                from database.refs.cp_tree import v4d_to_z2
+                print(f"[fold-guide][debug] step fn={step['function_name']!r} "
+                      f"ref v={tuple(float(c) for c in v.to_cartesian())!r} "
+                      f"z2={v4d_to_z2(v)!r} "
+                      f"-> origin_kind={origin_kind!r} origin_step={origin_step!r} "
+                      f"| expanded_len_at_resolution={len(expanded)} "
+                      f"expanded_fns={[s['function_name'] for s in expanded]!r}")
+                step_refs_v4d.append({
+                    "type": "vertex", "v": v,
+                    "origin_kind": origin_kind, "origin_step": origin_step,
+                })
             else:
                 step_refs_v4d.append({
                     "type": "crease",
@@ -405,7 +509,9 @@ def lookup_vertices(
                 if ref["type"] == "vertex":
                     processed_refs.append({
                         "type": "vertex",
-                        "v": fwd_fn(ref["v"]).to_cartesian()
+                        "v": fwd_fn(ref["v"]).to_cartesian(),
+                        "origin_kind": ref.get("origin_kind"),
+                        "origin_step": ref.get("origin_step"),
                     })
                 else:
                     processed_refs.append({
@@ -446,4 +552,3 @@ def apply_transform_to_ancestry(
 
 if __name__ == "__main__":
     pass
-    

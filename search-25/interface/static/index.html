@@ -7,6 +7,53 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+
+  <!-- ===================== API KEY GATE ===================== -->
+  <!-- Blocks the app until the visitor supplies their own Groq API key.
+       See static/js/apiKeyGate.js. The rest of the page stays blurred
+       and non-interactive behind this until a valid key is entered. -->
+  <div id="apiKeyModal" class="api-key-overlay">
+    <div class="api-key-box">
+      <h2 class="api-key-title">Enter your Groq API key</h2>
+      <p class="api-key-subtitle">
+        This app calls the Groq API directly using a key you provide.
+        Your key is stored only in your browser and is never sent anywhere
+        except Groq.
+      </p>
+
+      <label class="api-key-field-label" for="apiKeyInput">Your API key</label>
+      <input
+        id="apiKeyInput"
+        class="api-key-input"
+        type="password"
+        placeholder="gsk_..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+
+      <label class="api-key-field-label" for="apiModelInput">Model</label>
+      <input
+        id="apiModelInput"
+        class="api-key-input"
+        type="text"
+        value="openai/gpt-oss-120b"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <span class="api-key-hint">openai/gpt-oss-120b (recommended)</span>
+
+      <a
+        class="api-key-link"
+        href="https://console.groq.com/keys"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Get your Groq API key &rarr;</a>
+
+      <button id="apiKeyEnterBtn" class="api-key-enter-btn">Enter</button>
+      <div id="apiKeyStatus" class="api-key-status"></div>
+    </div>
+  </div>
+
   <div id="appRoot" class="app-root">
 
     <!-- ===================== LEFT PANEL ===================== -->
@@ -105,6 +152,7 @@
 
   </div>
 
+  <script type="module" src="/static/js/apiKeyGate.js"></script>
   <script type="module" src="/static/app.js"></script>
 </body>
 </html>

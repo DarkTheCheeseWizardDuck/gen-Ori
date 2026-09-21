@@ -19,18 +19,14 @@ CURRENT_DIR = Path(__file__).resolve().parent
 # -----------------------------
 # Load environment variables
 # -----------------------------
+# These are only used as a *fallback* for local/CLI use (e.g. running this
+# file directly). When served through interface/server.py, the browser's
+# API-key modal supplies api_key/model per-request instead, so nothing here
+# should raise at import time.
 load_dotenv(ROOT_DIR / ".env")
 
-api_key = os.getenv("GROQ_API_KEY")
-model = os.getenv("GROQ_MODEL")
-
-if not api_key:
-    raise ValueError("GROQ_API_KEY not found. Please create a .env file.")
-
-if not model:
-    raise ValueError("GROQ_MODEL not found. Please create a .env file.")
-
-client = Groq(api_key=api_key)
+DEFAULT_API_KEY = os.getenv("GROQ_API_KEY")
+DEFAULT_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 
 # -----------------------------
 # Load schema
@@ -60,12 +56,26 @@ system_prompt = prompt_template.replace("{SCHEMA}", schema)
 # ==========================================================
 # Main extraction function
 # ==========================================================
-def extract_structure(user_input: str) -> dict:
-    """Extract structure from a natural language request."""
+def extract_structure(user_input: str, api_key: str | None = None, model: str | None = None) -> dict:
+    """Extract structure from a natural language request.
+
+    api_key/model let the caller (e.g. the web interface, using the key the
+    visitor typed into the API-key modal) override the .env fallback on a
+    per-request basis. Nothing is cached across calls, so different
+    visitors' keys never mix.
+    """
+
+    resolved_key = api_key or DEFAULT_API_KEY
+    resolved_model = model or DEFAULT_MODEL
+
+    if not resolved_key:
+        raise ValueError("No Groq API key provided. Pass api_key= or set GROQ_API_KEY in .env.")
+
+    client = Groq(api_key=resolved_key)
 
     try:
         response = client.chat.completions.create(
-            model=model,
+            model=resolved_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_input}
