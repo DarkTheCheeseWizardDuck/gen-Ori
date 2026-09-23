@@ -5,7 +5,12 @@ __pycache__/
 
 # Databases
 *.db
+*.db-wal
+*.db-shm
+*.db-journal
 *.sqlite
+*.sqlite-wal
+*.sqlite-shm
 
 # Heavy indices and caches
 *.index
@@ -18,4 +23,3 @@ __pycache__/
 
 # Build metadata
 *.egg-info/
-

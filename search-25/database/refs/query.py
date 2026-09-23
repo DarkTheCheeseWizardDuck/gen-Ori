@@ -261,7 +261,6 @@ def _intersection_label(v: Vertex4D, expanded: list[dict]):
     """
     numbered = [s for s in expanded if s.get("function_name") != "root"]
     lines = [(0, b[0], b[1]) for b in _BORDER_EDGES]
-    lines += [(-1, d[0], d[1]) for d in _MAIN_DIAGONALS]
     lines += [(i + 1, s["new_crease_v1"], s["new_crease_v2"]) for i, s in enumerate(numbered)]
 
     hit_labels = []
@@ -275,6 +274,31 @@ def _intersection_label(v: Vertex4D, expanded: list[dict]):
     if len(hit_labels) >= 2:
         return (hit_labels[0], hit_labels[1])
     return None
+
+
+def _diagonal_step(which: int) -> dict:
+    """A corner-to-corner diagonal isn't stored in the tree as a fold (it's
+    always available, not something any node "creates"), but a person
+    reading the guide can't identify it from a bare description any more
+    than any other unexplained point -- it has to be shown as its own
+    explicit "crease through these two corners" step, exactly like any
+    other. This synthesizes a step in the same shape `_get_ancestry` rows
+    have, so it can be run through the normal per-step resolution and
+    appended into `expanded` like anything else, giving it a real, correctly
+    numbered panel instead of being treated as a free-standing landmark.
+    """
+    from database.refs.cp_tree import v4d_to_z2
+    c1, c2 = _MAIN_DIAGONALS[which]
+    refs_raw = json.dumps([
+        {"type": "vertex", "v": list(v4d_to_z2(c1))},
+        {"type": "vertex", "v": list(v4d_to_z2(c2))},
+    ])
+    return {
+        "id": f"synthetic-diagonal-{which}", "parent_id": None,
+        "function_name": "vertex_pair",
+        "new_crease_v1": c1, "new_crease_v2": c2,
+        "refs_raw": refs_raw, "depth": None, "canonical_id": None,
+    }
 
 
 def _get_ancestry_for_vertex(conn: sqlite3.Connection, v: Vertex4D) -> list[dict]:
@@ -335,54 +359,37 @@ def _expand_ancestry_with_anchors(
             if ref["type"] == "vertex":
                 v = z2_to_v4d(*ref["v"])
 
-                already_established = any(v == e for e in established)
-                sub_ancestry = None
-                if not already_established:
+                if not any(v == e for e in established):
                     sub_ancestry = _get_ancestry_for_vertex(conn, v)
                     if sub_ancestry:
                         _expand_ancestry_with_anchors(
                             sub_ancestry, conn, expanded, established, _depth + 1
                         )
-                    elif _intersection_label(v, expanded) is None:
-                        # This reference vertex is not a corner, not an
-                        # endpoint of any step shown so far, has no indexed
-                        # ancestry of its own to splice in, AND isn't the
-                        # crossing of any two lines already on the page --
-                        # the fold-guide UI is about to show a circled point
-                        # with no way for the user to have identified it.
-                        # Surface it server-side instead of failing silently
-                        # so specific cases can be tracked down.
-                        print(f"[fold-guide] WARNING: unresolved reference "
-                              f"vertex {v!r} in step "
-                              f"function_name={step['function_name']!r} "
-                              f"(node id={step.get('id')}) -- no matching "
-                              f"established point, no indexed ancestry, and "
-                              f"no line intersection found for it.")
-                # Targeted diagnostic: exactly why did/didn't the splice
-                # attempt happen, and what (if anything) did it find.
-                print(f"[fold-guide][splice-debug] v={tuple(float(c) for c in v.to_cartesian())!r} "
-                      f"already_established={already_established} sub_ancestry_len="
-                      f"{len(sub_ancestry) if sub_ancestry else 0} "
-                      f"sub_ancestry_fns="
-                      f"{[s['function_name'] for s in sub_ancestry] if sub_ancestry else None}")
 
                 origin_kind, origin_step = _origin_label(v, expanded)
                 if origin_kind is None:
                     pair = _intersection_label(v, expanded)
                     if pair is not None:
                         origin_kind, origin_step = ("intersection", pair)
-                # Unconditional (not just on failure) so we can see exactly
-                # what every ref resolves to, and how many entries are in
-                # `expanded` at the moment of resolution -- this is the
-                # ground truth needed to debug mismatches between this
-                # numbering and what the frontend actually displays.
-                from database.refs.cp_tree import v4d_to_z2
-                print(f"[fold-guide][debug] step fn={step['function_name']!r} "
-                      f"ref v={tuple(float(c) for c in v.to_cartesian())!r} "
-                      f"z2={v4d_to_z2(v)!r} "
-                      f"-> origin_kind={origin_kind!r} origin_step={origin_step!r} "
-                      f"| expanded_len_at_resolution={len(expanded)} "
-                      f"expanded_fns={[s['function_name'] for s in expanded]!r}")
+                if origin_kind is None:
+                    # Last resort: is this vertex on one of the square's own
+                    # corner-to-corner diagonals? If so, splice in an
+                    # explicit "crease through these two corners" step for
+                    # that diagonal (matching the upstream reference
+                    # implementation's own behavior) rather than treating
+                    # the diagonal as an unexplained free-standing landmark.
+                    for which, (d1, d2) in enumerate(_MAIN_DIAGONALS):
+                        if _vertex_on_infinite_line(d1, d2, v):
+                            _expand_ancestry_with_anchors(
+                                [_diagonal_step(which)], conn, expanded,
+                                established, _depth + 1
+                            )
+                            origin_kind, origin_step = _origin_label(v, expanded)
+                            if origin_kind is None:
+                                pair = _intersection_label(v, expanded)
+                                if pair is not None:
+                                    origin_kind, origin_step = ("intersection", pair)
+                            break
                 step_refs_v4d.append({
                     "type": "vertex", "v": v,
                     "origin_kind": origin_kind, "origin_step": origin_step,

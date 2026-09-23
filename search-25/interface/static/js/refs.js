@@ -175,6 +175,12 @@ function getInstructionText(fn, refs) {
     if (fn === "vertex_pair") {
         const vertexRefs = refs.filter(r => r.type === 'vertex');
         if (vertexRefs.length === 2) {
+            // Both points already self-evident (e.g. two corners, as with
+            // the square's own diagonal) -- the plain phrasing reads better
+            // than "the corner and the corner".
+            if (vertexRefs.every(r => r && r.originKind === 'corner')) {
+                return dict.instrVertexPair;
+            }
             const [a, b] = vertexRefs.map(describePoint);
             return (dict.instrVertexPairBoth || "Crease through {a} and {b}.")
                 .replace('{a}', a).replace('{b}', b);

@@ -66,6 +66,16 @@ except Exception as _refs_import_error:  # noqa: E402
     print(f"[startup] Fold guide unavailable -- {_refs_import_error}")
     pull_specific_tiling = None
     _REFS_AVAILABLE = False
+
+# Fold-guide computation (pull_specific_tiling -> lookup_vertices) redoes real
+# tree-database geometry for every vertex in a pattern on every single call --
+# there was no caching at all, so re-opening a pattern you already viewed (a
+# tab switch, a second visitor, a page reload) paid the full cost again for
+# identical results. Process-lifetime cache, keyed by the exact request
+# params; unbounded is fine here since results are small dicts of floats and
+# a typical session only touches a handful of distinct tilings.
+_refs_cache: dict[tuple[int, int, str], dict[str, Any]] = {}
+
 from database.tilings.faiss_cache import DIMENSION, E_SWEEP, compute_wks_signature  # noqa: E402
 from src.engine.tree import EIG_COUNT, RESOLUTION, extract_eigenvalues  # noqa: E402
 
@@ -236,36 +246,9 @@ class InterfaceHandler(BaseHTTPRequestHandler):
             self._handle_fetch_refs()
             return
 
-        if path == "/api/validate_key":
-            self._handle_validate_key()
-            return
-
         self.send_error(HTTPStatus.NOT_FOUND, "Not found")
 
     # ------------------------------------------------------------- handlers
-    def _handle_validate_key(self) -> None:
-        """Cheap check used by the API-key modal: confirms the visitor's Groq
-        key/model actually works before letting them into the app. Doesn't
-        touch the structure pipeline at all -- just a minimal Groq call."""
-        payload = _read_json(self)
-        api_key = payload.get("api_key") or ""
-        model = payload.get("model") or ""
-
-        if not api_key or not model:
-            _send_json(self, HTTPStatus.BAD_REQUEST, {"valid": False, "error": "api_key and model are required"})
-            return
-
-        try:
-            from groq import Groq
-            client = Groq(api_key=api_key)
-            client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": "ping"}],
-                max_tokens=1,
-            )
-            _send_json(self, HTTPStatus.OK, {"valid": True})
-        except Exception as e:
-            _send_json(self, HTTPStatus.OK, {"valid": False, "error": str(e)})
     def _handle_generate(self) -> None:
         payload = _read_json(self)
         prompt = payload.get("prompt", "")
@@ -273,17 +256,8 @@ class InterfaceHandler(BaseHTTPRequestHandler):
             _send_json(self, HTTPStatus.BAD_REQUEST, {"error": "prompt is required"})
             return
 
-        # Supplied by the browser's API-key modal (see static/index.html /
-        # static/app.js) so each visitor uses their own Groq key instead of
-        # one baked into the server's environment.
-        api_key = payload.get("api_key") or None
-        model = payload.get("model") or None
-        if not api_key:
-            _send_json(self, HTTPStatus.BAD_REQUEST, {"error": "api_key is required"})
-            return
-
         try:
-            upstream_result = run_pipeline(prompt, api_key=api_key, model=model)  # structure/pipeline.py, untouched
+            upstream_result = run_pipeline(prompt)  # structure/pipeline.py, untouched
             raw_parts = upstream_result["structure"]["parts"]
 
             tan_output = predict(_MODEL, raw_parts)
@@ -356,16 +330,24 @@ class InterfaceHandler(BaseHTTPRequestHandler):
             _send_json(self, HTTPStatus.BAD_REQUEST, {"error": "tiling_id, N, and symmetry are required"})
             return
 
+        cache_key = (tiling_id, N, symmetry)
+        cached = _refs_cache.get(cache_key)
+        if cached is not None:
+            _send_json(self, HTTPStatus.OK, cached)
+            return
+
         try:
             results = pull_specific_tiling(tiling_id, N, symmetry)
             if not results:
                 _send_json(self, HTTPStatus.NOT_FOUND, {"error": "tiling not found"})
                 return
             result = results[0]
-            _send_json(self, HTTPStatus.OK, {
+            response = {
                 "refs": result.get("refs", {}),
                 "cp": serialize_cp(result["cp"]),
-            })
+            }
+            _refs_cache[cache_key] = response
+            _send_json(self, HTTPStatus.OK, response)
         except Exception as e:
             print(f"[fetch_refs] FAILED for tiling_id={tiling_id} N={N} sym={symmetry}:")
             traceback.print_exc()
