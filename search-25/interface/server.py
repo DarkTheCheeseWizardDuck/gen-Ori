@@ -8,6 +8,7 @@ Routes:
     POST /api/generate          -> NL prompt -> tree payload
     POST /api/search            -> tree payload -> matched crease patterns
     POST /api/fetch_refs        -> tiling_id/N/symmetry -> fold-guide references
+    POST /api/validate_key      -> api_key/model -> {valid: bool}
 
 No Google Sheets logging, no interface token/auth, no /about or /view pages --
 intentionally left out, not part of what was asked for. This is meant to run
@@ -246,9 +247,37 @@ class InterfaceHandler(BaseHTTPRequestHandler):
             self._handle_fetch_refs()
             return
 
+        if path == "/api/validate_key":
+            self._handle_validate_key()
+            return
+
         self.send_error(HTTPStatus.NOT_FOUND, "Not found")
 
     # ------------------------------------------------------------- handlers
+    def _handle_validate_key(self) -> None:
+        """Cheap check used by the API-key modal: confirms the visitor's Groq
+        key/model actually works before letting them into the app. Doesn't
+        touch the structure pipeline at all -- just a minimal Groq call."""
+        payload = _read_json(self)
+        api_key = payload.get("api_key") or ""
+        model = payload.get("model") or ""
+
+        if not api_key or not model:
+            _send_json(self, HTTPStatus.BAD_REQUEST, {"valid": False, "error": "api_key and model are required"})
+            return
+
+        try:
+            from groq import Groq
+            client = Groq(api_key=api_key)
+            client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": "ping"}],
+                max_tokens=1,
+            )
+            _send_json(self, HTTPStatus.OK, {"valid": True})
+        except Exception as e:
+            _send_json(self, HTTPStatus.OK, {"valid": False, "error": str(e)})
+
     def _handle_generate(self) -> None:
         payload = _read_json(self)
         prompt = payload.get("prompt", "")
@@ -256,8 +285,17 @@ class InterfaceHandler(BaseHTTPRequestHandler):
             _send_json(self, HTTPStatus.BAD_REQUEST, {"error": "prompt is required"})
             return
 
+        # Supplied by the browser's API-key modal (see static/index.html /
+        # static/js/apiKeyGate.js) so each visitor uses their own Groq key
+        # instead of one baked into the server's environment.
+        api_key = payload.get("api_key") or None
+        model = payload.get("model") or None
+        if not api_key:
+            _send_json(self, HTTPStatus.BAD_REQUEST, {"error": "api_key is required"})
+            return
+
         try:
-            upstream_result = run_pipeline(prompt)  # structure/pipeline.py, untouched
+            upstream_result = run_pipeline(prompt, api_key=api_key, model=model)  # structure/pipeline.py, untouched
             raw_parts = upstream_result["structure"]["parts"]
 
             tan_output = predict(_MODEL, raw_parts)
